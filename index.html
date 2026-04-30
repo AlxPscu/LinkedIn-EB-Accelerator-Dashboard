@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nawy · LinkedIn EB Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/recharts@2.8.0/umd/Recharts.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #F5F4F0; font-family: 'Work Sans', sans-serif; color: #1A1714; }
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+    ::-webkit-scrollbar-thumb { background: #D4CFC8; border-radius: 2px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .kpis { display: grid; grid-template-columns: repeat(4,1fr); background: #fff; border-bottom: 1px solid #E7E3DC; }
+    @media print {
+      .no-print { display: none !important; }
+      .print-break { display: block !important; page-break-before: always; height: 0; }
+      body { background: white; }
+      .card { box-shadow: none !important; }
+    }
+    @media (max-width: 640px) {
+      .grid2 { grid-template-columns: 1fr !important; }
+      .kpis  { grid-template-columns: repeat(2,1fr) !important; }
+    }
+    .print-break { display: none; }
+    .tab-btn { background: none; border: none; cursor: pointer; padding: 11px 18px; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Work Sans', sans-serif; transition: color 0.15s, border-color 0.15s; }
+    .pdf-btn { background: none; color: #C8401A; border: 1.5px solid #C8401A; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Work Sans', sans-serif; flex-shrink: 0; }
+    .pdf-btn:hover { background: #FEF0EB; }
+    tr:hover td { background: #FAFAF8; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+const { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, CartesianGrid } = Recharts;
+
+const C = {
+  accent:"#C8401A", bg:"#F5F4F0", surface:"#FFFFFF", border:"#E7E3DC",
+  text1:"#1A1714", text2:"#6B635A", text3:"#A8A09A",
+  green:"#15803D", greenSoft:"#D1FAE5", blue:"#1D4ED8",
+  blueSoft:"#DBEAFE", amberSoft:"#FEF3C7", amberText:"#92400E",
+};
+
+const TYPE_COLOR = { Video: C.accent, Carousel: C.blue, Ambassador: C.green };
+const FLAG = {
+  EB:        { bg: C.blueSoft,  text: "#1E40AF" },
+  Content:   { bg: C.amberSoft, text: C.amberText },
+  Marketing: { bg: C.greenSoft, text: "#065F46" },
+};
+
+// ── DATA (updated by Claude on each post upload) ──────────────────────────────
+const POSTS = [
+  {
+    id:1, date:"Apr 26",
+    caption:"For real estate sales professionals ready for more",
+    type:"Video", impressions:15240, reached:10963, engRate:6.7,
+    clicks:953, ctr:6.3, reactions:53, comments:0, reposts:10,
+    followersGained:3, pageViewers:110, videoViews:4594, avgWatch:10,
+  },
+  {
+    id:2, date:"Apr 28",
+    caption:"Q1 target. Hit.",
+    type:"Carousel", impressions:5880, reached:4161, engRate:49.1,
+    clicks:2808, ctr:47.8, reactions:53, comments:8, reposts:21,
+    followersGained:1, pageViewers:53, videoViews:null, avgWatch:null,
+  },
+  {
+    id:3, date:"Apr 29",
+    caption:"Nawy Voices — The bar set by someone who engages with talent daily",
+    type:"Ambassador", impressions:2647, reached:1790, engRate:9.9,
+    clicks:223, ctr:8.4, reactions:27, comments:3, reposts:8,
+    followersGained:8, pageViewers:16, videoViews:null, avgWatch:null,
+  },
+];
+
+const DEMOGRAPHICS = [
+  { role:"Salesperson",          pct:9.5 },
+  { role:"Software Developer",   pct:6.3 },
+  { role:"HR Specialist",        pct:2.7 },
+  { role:"Accountant",           pct:2.5 },
+  { role:"Marketing Specialist", pct:2.4 },
+];
+
+// ── INSIGHTS (rewritten by Claude on each update) ─────────────────────────────
+const INSIGHTS = [
+  {
+    id:1, flags:["EB"],
+    title:"Ambassador content converts followers 9× better per reach",
+    body:"Nawy Voices (Apr 29) achieved a 0.45% follow rate — 8 followers from 1,790 reached. The video (Apr 26) achieved 0.03% — 3 from 10,963. Real employees speaking to aspiring professionals consistently outperform brand voice for audience growth on LinkedIn.",
+    action:"Scale ambassador posts to 2× per week. Prioritise active Property Consultants and team leads sharing personal trajectory stories — not polished brand copy.",
+  },
+  {
+    id:2, flags:["Content"],
+    title:"Video hook isn't retaining — 10s avg watch time signals immediate drop-off",
+    body:"Apr 26 video reached 10,963 members and drew 4,594 views, but average watch time is 10s. The current opener — 'For real estate sales professionals ready for more' — is too generic to stop scroll in a competitive feed.",
+    action:"Lead with a specific, provocative claim: 'Most agents close 30% less than they should — here's the fix.' Test a visual cold open with no intro branding. Remove any slow fade-ins or logo reveals.",
+  },
+  {
+    id:3, flags:["Content","Marketing"],
+    title:"Achievement content drives strongest virality — but every post is missing a follow CTA",
+    body:"Q1 Target. Hit. earned 21 reposts and 8 comments on 4,161 reach — highest virality in the set. But only 1 follower was gained despite 53 reactions. None of the 3 posts included an explicit follow CTA, leaving organic amplification without audience conversion.",
+    action:"Add to every post: 'Follow Nawy for weekly real estate career insights.' Especially critical on high-virality content where amplification is already happening organically.",
+  },
+  {
+    id:4, flags:["Marketing"],
+    title:"Video is the reach engine — structure the weekly cadence around it",
+    body:"Video reached 10,963 vs carousel's 4,161 and ambassador's 1,790. For top-of-funnel EB awareness, video is the clear distribution winner at 2.6× the next format. Note: carousel's 49.1% eng rate is mechanically inflated by page-swipes.",
+    action:"Weekly content rhythm: Video on Monday for reach, Carousel mid-week for engagement depth, Ambassador end-of-week for follow conversion. One format per objective.",
+  },
+  {
+    id:5, flags:["EB"],
+    title:"Target audience is actively in the feed — Salesperson is #1 viewer demographic",
+    body:"Video demographics confirm the primary hire persona is watching: Salesperson at 9.5% of viewers. Software Developers at 6.3% indicate career-shifter potential. HR Specialists at 2.7% represent internal amplifiers who can share within their own networks.",
+    action:"Maintain current targeting. Add explicit 'experienced sales agent' and 'career-shifter' language in captions to reinforce algorithmic persona matching.",
+  },
+];
+
+const fmtN = (n) => n?.toLocaleString() ?? "—";
+const fmt  = (n) => n >= 1000 ? `${(n/1000).toFixed(1)}K` : String(n ?? 0);
+
+const Tip = ({ active, payload, label }) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div style={{background:"#fff",border:`1px solid ${C.border}`,borderRadius:8,padding:"8px 12px",fontSize:12,boxShadow:"0 4px 12px rgba(0,0,0,0.08)"}}>
+      <div style={{color:C.text3,marginBottom:4,fontWeight:500}}>{label}</div>
+      {payload.map(p => (
+        <div key={p.name} style={{color:p.color||C.text1}}>{p.name}: <strong>{p.value?.toLocaleString()}</strong></div>
+      ))}
+    </div>
+  );
+};
+
+function Dashboard() {
+  const [tab, setTab] = useState("overview");
+  const [printing, setPrinting] = useState(false);
+
+  const totImp       = POSTS.reduce((a,p) => a+p.impressions,0);
+  const totReach     = POSTS.reduce((a,p) => a+p.reached,0);
+  const totFollowers = POSTS.reduce((a,p) => a+p.followersGained,0);
+  const totReposts   = POSTS.reduce((a,p) => a+p.reposts,0);
+  const maxImp       = Math.max(...POSTS.map(p=>p.impressions));
+  const maxFol       = Math.max(...POSTS.map(p=>p.followersGained));
+
+  const handlePrint = () => {
+    setPrinting(true);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      window.print();
+      setPrinting(false);
+    }));
+  };
+
+  const showO = tab==="overview" || printing;
+  const showI = tab==="insights" || printing;
+  const showT = tab==="table"    || printing;
+
+  const card = { background:C.surface, borderRadius:12, border:`1px solid ${C.border}`, padding:20, boxShadow:"0 1px 4px rgba(0,0,0,0.05)" };
+
+  return (
+    <div style={{fontFamily:"'Work Sans',sans-serif",background:C.bg,minHeight:"100vh",color:C.text1}}>
+
+      {/* HEADER */}
+      <header style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"16px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+        <div>
+          <div style={{display:"flex",alignItems:"baseline",gap:10,marginBottom:5}}>
+            <span style={{fontFamily:"'Lora',serif",fontWeight:700,fontSize:20,color:C.accent,letterSpacing:"-0.02em"}}>Nawy</span>
+            <span style={{color:C.border,fontSize:14}}>|</span>
+            <span style={{fontWeight:500,fontSize:13,color:C.text2}}>LinkedIn EB · Primary Sales</span>
+          </div>
+          <div style={{fontSize:11,color:C.text3,letterSpacing:"0.03em"}}>
+            Apr 26 – May 29, 2026 &nbsp;·&nbsp; Day 5 of 34 &nbsp;·&nbsp; {POSTS.length} posts tracked &nbsp;·&nbsp; 29 days remaining
+          </div>
+        </div>
+        <button className="pdf-btn no-print" onClick={handlePrint}>↓ Download PDF</button>
+      </header>
+
+      {/* KPIS */}
+      <div className="kpis">
+        {[
+          {label:"Total Impressions", value:fmtN(totImp),       sub:"Apr 26–29"},
+          {label:"Total Reach",       value:fmtN(totReach),     sub:"unique members"},
+          {label:"Followers Gained",  value:totFollowers,       sub:"new followers"},
+          {label:"Total Reposts",     value:totReposts,         sub:"organic shares"},
+        ].map((k,i) => (
+          <div key={i} style={{padding:"18px 22px",borderRight:i<3?`1px solid ${C.border}`:"none"}}>
+            <div style={{fontSize:10,fontWeight:500,letterSpacing:"0.09em",textTransform:"uppercase",color:C.text3,marginBottom:6}}>{k.label}</div>
+            <div style={{fontFamily:"'Lora',serif",fontSize:28,fontWeight:700,color:C.text1,lineHeight:1}}>{k.value}</div>
+            <div style={{fontSize:11,color:C.text3,marginTop:5}}>{k.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* TABS */}
+      <nav className="no-print" style={{background:C.surface,borderBottom:`1px solid ${C.border}`,display:"flex",paddingLeft:20}}>
+        {[["overview","Overview"],["insights","Insights"],["table","Data Table"]].map(([t,label]) => (
+          <button key={t} className="tab-btn" onClick={() => setTab(t)}
+            style={{color:tab===t?C.accent:C.text3, borderBottom:`2px solid ${tab===t?C.accent:"transparent"}`}}>
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      <main style={{padding:"24px"}}>
+
+        {/* OVERVIEW */}
+        {showO && (
+          <section>
+            {printing && <div style={{fontFamily:"'Lora',serif",fontSize:14,fontWeight:700,color:C.text3,marginBottom:16,textTransform:"uppercase",letterSpacing:"0.1em"}}>Overview</div>}
+            <div className="grid2">
+
+              <div style={card}>
+                <div style={{fontSize:10,fontWeight:500,letterSpacing:"0.09em",textTransform:"uppercase",color:C.text3,marginBottom:14}}>Impressions by Post</div>
+                <ResponsiveContainer width="100%" height={170}>
+                  <BarChart data={POSTS} barSize={38} margin={{top:4,right:4,left:-18,bottom:0}}>
+                    <CartesianGrid stroke="#F0EDE8" vertical={false}/>
+                    <XAxis dataKey="date" tick={{fontSize:10,fill:C.text3}} axisLine={false} tickLine={false}/>
+                    <YAxis tick={{fontSize:10,fill:C.text3}} axisLine={false} tickLine={false} tickFormatter={fmt}/>
+                    <Tooltip content={<Tip/>} cursor={{fill:C.bg}}/>
+                    <Bar dataKey="impressions" name="Impressions" radius={[4,4,0,0]}>
+                      {POSTS.map(p => <Cell key={p.id} fill={p.impressions===maxImp?C.accent:"#E8E3DB"}/>)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div style={card}>
+                <div style={{fontSize:10,fontWeight:500,letterSpacing:"0.09em",textTransform:"uppercase",color:C.text3,marginBottom:14}}>Followers Gained</div>
+                <ResponsiveContainer width="100%" height={170}>
+                  <BarChart data={POSTS} barSize={38} margin={{top:4,right:4,left:-18,bottom:0}}>
+                    <CartesianGrid stroke="#F0EDE8" vertical={false}/>
+                    <XAxis dataKey="date" tick={{fontSize:10,fill:C.text3}} axisLine={false} tickLine={false}/>
+                    <YAxis tick={{fontSize:10,fill:C.text3}} axisLine={false} tickLine={false}/>
+                    <Tooltip content={<Tip/>} cursor={{fill:C.bg}}/>
+                    <Bar dataKey="followersGained" name="Followers Gained" radius={[4,4,0,0]}>
+                      {POSTS.map(p => <Cell key={p.id} fill={p.followersGained===maxFol?C.green:C.greenSoft}/>)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div style={card}>
+                <div style={{fontSize:10,fontWeight:500,letterSpacing:"0.09em",textTransform:"uppercase",color:C.text3,marginBottom:14}}>Reactions & Reposts</div>
+                <ResponsiveContainer width="100%" height={170}>
+                  <BarChart data={POSTS} barSize={14} barCategoryGap="35%" margin={{top:4,right:4,left:-18,bottom:0}}>
+                    <CartesianGrid stroke="#F0EDE8" vertical={false}/>
+                    <XAxis dataKey="date" tick={{fontSize:10,fill:C.text3}} axisLine={false} tickLine={false}/>
+                    <YAxis tick={{fontSize:10,fill:C.text3}} axisLine={false} tickLine={false}/>
+                    <Tooltip content={<Tip/>} cursor={{fill:C.bg}}/>
+                    <Bar dataKey="reactions" name="Reactions" fill={C.accent} radius={[3,3,0,0]}/>
+                    <Bar dataKey="reposts"   name="Reposts"   fill="#93C5FD" radius={[3,3,0,0]}/>
+                  </BarChart>
+                </ResponsiveContainer>
+                <div style={{display:"flex",gap:16,marginTop:10}}>
+                  {[["Reactions",C.accent],["Reposts","#93C5FD"]].map(([l,c]) => (
+                    <div key={l} style={{display:"flex",alignItems:"center",gap:6,fontSize:11,color:C.text2}}>
+                      <div style={{width:8,height:8,borderRadius:2,background:c}}/>{l}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={card}>
+                <div style={{fontSize:10,fontWeight:500,letterSpacing:"0.09em",textTransform:"uppercase",color:C.text3,marginBottom:2}}>Video Viewer Demographics</div>
+                <div style={{fontSize:11,color:C.text3,marginBottom:16}}>Apr 26 video · by job title</div>
+                {DEMOGRAPHICS.map((d,i) => (
+                  <div key={i} style={{marginBottom:13}}>
+                    <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+                      <span style={{fontSize:12,color:C.text2}}>{d.role}</span>
+                      <span style={{fontSize:12,fontWeight:600,color:C.text1}}>{d.pct}%</span>
+                    </div>
+                    <div style={{height:3,background:"#F0EDE8",borderRadius:2}}>
+                      <div style={{height:"100%",width:`${(d.pct/9.5)*100}%`,background:i===0?C.accent:"#D4CFC8",borderRadius:2}}/>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{...card,display:"flex",flexWrap:"wrap",alignItems:"center",gap:16,padding:"14px 20px"}}>
+              <span style={{fontSize:10,fontWeight:500,letterSpacing:"0.09em",textTransform:"uppercase",color:C.text3}}>Posts</span>
+              {POSTS.map(p => (
+                <div key={p.id} style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                  <div style={{width:6,height:6,borderRadius:"50%",background:TYPE_COLOR[p.type]}}/>
+                  <span style={{fontSize:12,color:C.text2,fontWeight:500}}>{p.date}</span>
+                  <span style={{fontSize:11,color:C.text3}}>{p.caption.length>42?p.caption.slice(0,42)+"…":p.caption}</span>
+                  <span style={{fontSize:10,fontWeight:600,background:TYPE_COLOR[p.type]+"18",color:TYPE_COLOR[p.type],padding:"2px 8px",borderRadius:10}}>{p.type}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* INSIGHTS */}
+        {showI && (
+          <>
+            <div className="print-break"/>
+            <section style={{marginTop: printing?"0":"0"}}>
+              {printing && <div style={{fontFamily:"'Lora',serif",fontSize:14,fontWeight:700,color:C.text3,marginBottom:16,textTransform:"uppercase",letterSpacing:"0.1em"}}>Insights & Recommendations</div>}
+              <div style={{maxWidth:printing?"100%":680}}>
+                <div style={{fontSize:10,fontWeight:500,letterSpacing:"0.09em",textTransform:"uppercase",color:C.text3,marginBottom:16}}>
+                  Analysis · Apr 30, 2026 · {POSTS.length} posts · Apr 26–29
+                </div>
+                {INSIGHTS.map(ins => (
+                  <div key={ins.id} style={{...card,marginBottom:12}}>
+                    <div style={{display:"flex",gap:6,marginBottom:10,flexWrap:"wrap"}}>
+                      {ins.flags.map(f => (
+                        <span key={f} style={{fontSize:9,fontWeight:700,letterSpacing:"0.09em",textTransform:"uppercase",background:FLAG[f].bg,color:FLAG[f].text,padding:"3px 8px",borderRadius:10}}>
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                    <div style={{fontFamily:"'Lora',serif",fontSize:14,fontWeight:600,color:C.text1,marginBottom:8,lineHeight:1.45}}>{ins.title}</div>
+                    <div style={{fontSize:12,color:C.text2,lineHeight:1.75,marginBottom:12}}>{ins.body}</div>
+                    <div style={{borderTop:`1px solid ${C.border}`,paddingTop:10,display:"flex",gap:10,alignItems:"flex-start"}}>
+                      <span style={{fontSize:9,fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",color:C.accent,flexShrink:0,paddingTop:2}}>Action</span>
+                      <span style={{fontSize:12,color:C.text2,lineHeight:1.65}}>{ins.action}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
+
+        {/* TABLE */}
+        {showT && (
+          <>
+            <div className="print-break"/>
+            <section>
+              {printing && <div style={{fontFamily:"'Lora',serif",fontSize:14,fontWeight:700,color:C.text3,marginBottom:16,textTransform:"uppercase",letterSpacing:"0.1em"}}>Data Table</div>}
+              <div style={{...card,padding:0,overflow:"hidden"}}>
+                <div style={{overflowX:"auto"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
+                    <thead>
+                      <tr style={{borderBottom:`1px solid ${C.border}`,background:"#FAFAF8"}}>
+                        {["Date","Caption","Type","Impressions","Reach","Eng%","Clicks","CTR%","React.","Comm.","Reposts","+Followers","Page Views"].map(h => (
+                          <th key={h} style={{textAlign:"left",padding:"10px 14px",fontSize:9,fontWeight:600,letterSpacing:"0.09em",textTransform:"uppercase",color:C.text3,whiteSpace:"nowrap"}}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {POSTS.map((p,i) => (
+                        <tr key={p.id} style={{borderBottom:i<POSTS.length-1?`1px solid #F5F4F0`:"none"}}>
+                          <td style={{padding:"13px 14px",color:C.text2,fontWeight:500,whiteSpace:"nowrap"}}>{p.date}</td>
+                          <td style={{padding:"13px 14px",color:C.text1,maxWidth:180}}>
+                            <div style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.caption}</div>
+                          </td>
+                          <td style={{padding:"13px 14px"}}>
+                            <span style={{fontSize:10,fontWeight:600,background:TYPE_COLOR[p.type]+"18",color:TYPE_COLOR[p.type],padding:"2px 8px",borderRadius:10}}>{p.type}</span>
+                          </td>
+                          <td style={{padding:"13px 14px",fontWeight:600,color:C.text1}}>{fmtN(p.impressions)}</td>
+                          <td style={{padding:"13px 14px",color:C.text1}}>{fmtN(p.reached)}</td>
+                          <td style={{padding:"13px 14px",color:C.accent,fontWeight:600}}>{p.engRate}%</td>
+                          <td style={{padding:"13px 14px",color:C.text1}}>{fmtN(p.clicks)}</td>
+                          <td style={{padding:"13px 14px",color:C.text2}}>{p.ctr}%</td>
+                          <td style={{padding:"13px 14px",color:C.text1}}>{p.reactions}</td>
+                          <td style={{padding:"13px 14px",color:C.text1}}>{p.comments}</td>
+                          <td style={{padding:"13px 14px",color:C.blue,fontWeight:500}}>{p.reposts}</td>
+                          <td style={{padding:"13px 14px",color:C.green,fontWeight:700}}>{p.followersGained}</td>
+                          <td style={{padding:"13px 14px",color:C.text2}}>{p.pageViewers}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+      </main>
+
+      <footer style={{borderTop:`1px solid ${C.border}`,padding:"12px 24px",display:"flex",justifyContent:"space-between",alignItems:"center",background:C.surface,marginTop:8}}>
+        <span style={{fontSize:10,color:C.text3}}>Nawy · Primary Sales EB · LinkedIn Dashboard · Apr 26 – May 29, 2026</span>
+        <span style={{fontSize:10,color:C.text3}}>Updated Apr 30, 2026</span>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard/>);
+</script>
+</body>
+</html>
