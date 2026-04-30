@@ -6,47 +6,40 @@
 <title>Primary Accelerator Tracker · Nawy</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#F5F4F0;font-family:'Work Sans',sans-serif;color:#1A1714;font-size:14px;}
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:#D4CFC8;border-radius:2px;}
-a{text-decoration:none;}
-
-/* Layout */
 .header{background:#fff;border-bottom:1px solid #E7E3DC;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12;}
 .header-title{font-family:'Lora',serif;font-weight:700;font-size:20px;color:#C8401A;letter-spacing:-0.02em;}
 .header-sub{font-weight:500;font-size:13px;color:#6B635A;}
 .header-meta{font-size:11px;color:#A8A09A;letter-spacing:0.03em;margin-top:4px;}
 .header-divider{color:#E7E3DC;margin:0 8px;}
-.btn-pdf{background:none;color:#C8401A;border:1.5px solid #C8401A;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Work Sans',sans-serif;flex-shrink:0;}
+.btn-pdf{background:none;color:#C8401A;border:1.5px solid #C8401A;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Work Sans',sans-serif;flex-shrink:0;transition:background .15s;}
 .btn-pdf:hover{background:#FEF0EB;}
-
+.btn-pdf:disabled{opacity:.5;cursor:not-allowed;}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-bottom:1px solid #E7E3DC;}
 .kpi{padding:18px 22px;border-right:1px solid #E7E3DC;}
 .kpi:last-child{border-right:none;}
 .kpi-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:6px;}
 .kpi-value{font-family:'Lora',serif;font-size:28px;font-weight:700;color:#1A1714;line-height:1;}
 .kpi-sub{font-size:11px;color:#A8A09A;margin-top:5px;}
-
 .tabs{background:#fff;border-bottom:1px solid #E7E3DC;display:flex;padding-left:20px;}
 .tab{background:none;border:none;cursor:pointer;padding:11px 18px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;font-family:'Work Sans',sans-serif;color:#A8A09A;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
 .tab.active{color:#C8401A;border-bottom-color:#C8401A;}
-
 main{padding:24px;}
 .section{display:none;}
 .section.active{display:block;}
-
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .card{background:#fff;border-radius:12px;border:1px solid #E7E3DC;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
 .card-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:14px;}
 .card-sublabel{font-size:11px;color:#A8A09A;margin-top:-10px;margin-bottom:14px;}
 .chart-wrap{position:relative;height:170px;}
-
 .legend{display:flex;gap:16px;margin-top:10px;}
 .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#6B635A;}
 .legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
-
 .post-legend{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:14px 20px;}
 .post-legend-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;}
 .post-item{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
@@ -54,16 +47,12 @@ main{padding:24px;}
 .post-date{font-size:12px;color:#6B635A;font-weight:500;}
 .post-cap{font-size:11px;color:#A8A09A;}
 .post-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;}
-
-/* Demographics */
 .demo-row{margin-bottom:13px;}
 .demo-header{display:flex;justify-content:space-between;margin-bottom:5px;}
 .demo-role{font-size:12px;color:#6B635A;}
 .demo-pct{font-size:12px;font-weight:600;color:#1A1714;}
 .demo-bar-bg{height:3px;background:#F0EDE8;border-radius:2px;}
 .demo-bar-fill{height:100%;border-radius:2px;}
-
-/* Insights */
 .insights-meta{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:16px;}
 .insight-card{background:#fff;border-radius:12px;border:1px solid #E7E3DC;padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
 .flags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
@@ -76,8 +65,6 @@ main{padding:24px;}
 .insight-action{border-top:1px solid #E7E3DC;padding-top:10px;display:flex;gap:10px;align-items:flex-start;}
 .action-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C8401A;flex-shrink:0;padding-top:2px;}
 .action-text{font-size:12px;color:#6B635A;line-height:1.65;}
-
-/* Table */
 .table-wrap{background:#fff;border-radius:12px;border:1px solid #E7E3DC;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);}
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -95,27 +82,18 @@ td{padding:13px 14px;color:#1A1714;}
 .td-followers{color:#15803D;font-weight:700;}
 .td-muted{color:#6B635A;}
 .td-bold{font-weight:600;}
-
 footer{border-top:1px solid #E7E3DC;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;background:#fff;margin-top:8px;}
 footer span{font-size:10px;color:#A8A09A;}
-
-@media print{
-  .no-print{display:none!important;}
-  body{background:#fff;}
-  .section{display:block!important;}
-  .card{box-shadow:none!important;}
-}
 @media(max-width:640px){
   .grid2{grid-template-columns:1fr!important;}
   .kpis{grid-template-columns:repeat(2,1fr)!important;}
   .kpi:nth-child(2){border-right:none;}
-  header{flex-wrap:wrap;}
 }
 </style>
 </head>
 <body>
 
-<header class="header">
+<header class="header" id="main-header">
   <div>
     <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;">
       <span class="header-title">Nawy</span>
@@ -124,25 +102,24 @@ footer span{font-size:10px;color:#A8A09A;}
     </div>
     <div class="header-meta">Apr 26 – May 29, 2026 · Day 5 of 34 · 3 posts tracked · 29 days remaining</div>
   </div>
-  <button class="btn-pdf no-print" onclick="window.print()">↓ Download PDF</button>
+  <button class="btn-pdf" id="pdf-btn" onclick="downloadPDF()">↓ Download PDF</button>
 </header>
 
-<div class="kpis">
+<div class="kpis" id="main-kpis">
   <div class="kpi"><div class="kpi-label">Total Impressions</div><div class="kpi-value">23,767</div><div class="kpi-sub">Apr 26–29</div></div>
   <div class="kpi"><div class="kpi-label">Total Reach</div><div class="kpi-value">16,914</div><div class="kpi-sub">unique members</div></div>
   <div class="kpi"><div class="kpi-label">Followers Gained</div><div class="kpi-value">12</div><div class="kpi-sub">new followers</div></div>
   <div class="kpi"><div class="kpi-label">Total Reposts</div><div class="kpi-value">39</div><div class="kpi-sub">organic shares</div></div>
 </div>
 
-<nav class="tabs no-print">
+<nav class="tabs" id="main-tabs">
   <button class="tab active" onclick="switchTab('overview',this)">Overview</button>
   <button class="tab" onclick="switchTab('insights',this)">Insights</button>
   <button class="tab" onclick="switchTab('table',this)">Data Table</button>
 </nav>
 
-<main>
+<main id="main-content">
 
-  <!-- OVERVIEW -->
   <div id="overview" class="section active">
     <div class="grid2">
       <div class="card"><div class="card-label">Impressions by Post</div><div class="chart-wrap"><canvas id="chartImpr"></canvas></div></div>
@@ -169,72 +146,51 @@ footer span{font-size:10px;color:#A8A09A;}
     </div>
   </div>
 
-  <!-- INSIGHTS -->
   <div id="insights" class="section">
     <div style="max-width:680px;">
       <div class="insights-meta">Analysis · Apr 30, 2026 · 3 posts · Apr 26–29</div>
-
       <div class="insight-card">
         <div class="flags"><span class="flag flag-eb">EB</span></div>
-        <div class="insight-title">Ambassador content converts followers 9× better per reach</div>
+        <div class="insight-title">Ambassador content converts followers 9x better per reach</div>
         <div class="insight-body">Nawy Voices (Apr 29) achieved a 0.45% follow rate — 8 followers from 1,790 reached. The video (Apr 26) achieved 0.03% — 3 from 10,963. Real employees speaking to aspiring professionals consistently outperform brand voice for audience growth on LinkedIn.</div>
-        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Scale ambassador posts to 2× per week. Prioritise active Property Consultants and team leads sharing personal trajectory stories — not polished brand copy.</span></div>
+        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Scale ambassador posts to 2x per week. Prioritise active Property Consultants and team leads sharing personal trajectory stories, not polished brand copy.</span></div>
       </div>
-
       <div class="insight-card">
         <div class="flags"><span class="flag flag-content">Content</span></div>
         <div class="insight-title">Video hook isn't retaining — 10s avg watch time signals immediate drop-off</div>
-        <div class="insight-body">Apr 26 video reached 10,963 members and drew 4,594 views, but average watch time is only 10s. Drop-off is happening in the first seconds. The opener "For real estate sales professionals ready for more" is too generic to stop scroll in a competitive feed.</div>
+        <div class="insight-body">Apr 26 video reached 10,963 members and drew 4,594 views, but average watch time is only 10s. The opener "For real estate sales professionals ready for more" is too generic to stop scroll in a competitive feed.</div>
         <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Lead with a specific, provocative claim: 'Most agents close 30% less than they should — here's the fix.' Test a visual cold open with no intro branding. Remove any slow fade-ins or logo reveals.</span></div>
       </div>
-
       <div class="insight-card">
         <div class="flags"><span class="flag flag-content">Content</span><span class="flag flag-marketing">Marketing</span></div>
         <div class="insight-title">Achievement content drives strongest virality — but every post is missing a follow CTA</div>
-        <div class="insight-body">Q1 Target. Hit. earned 21 reposts and 8 comments on 4,161 reach — highest virality in the set. But only 1 follower was gained despite 53 reactions. None of the 3 posts included an explicit follow CTA, leaving organic amplification without audience conversion.</div>
+        <div class="insight-body">Q1 Target. Hit. earned 21 reposts and 8 comments on 4,161 reach — highest virality in the set. But only 1 follower was gained despite 53 reactions. None of the 3 posts included an explicit follow CTA.</div>
         <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Add to every post: 'Follow Nawy for weekly real estate career insights.' Especially critical on high-virality content where amplification is already happening organically.</span></div>
       </div>
-
       <div class="insight-card">
         <div class="flags"><span class="flag flag-marketing">Marketing</span></div>
         <div class="insight-title">Video is the reach engine — structure the weekly cadence around it</div>
-        <div class="insight-body">Video reached 10,963 vs carousel's 4,161 and ambassador's 1,790. For top-of-funnel EB awareness, video is the clear distribution winner at 2.6× the next format. Note: carousel's 49.1% eng rate is mechanically inflated by page-swipes — true comparative metrics are reposts and followers gained.</div>
+        <div class="insight-body">Video reached 10,963 vs carousel's 4,161 and ambassador's 1,790. For top-of-funnel EB awareness, video is the clear distribution winner at 2.6x the next format. Note: carousel's 49.1% eng rate is mechanically inflated by page-swipes.</div>
         <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Weekly content rhythm: Video on Monday for reach, Carousel mid-week for engagement depth, Ambassador end-of-week for follow conversion. One format per objective.</span></div>
       </div>
-
       <div class="insight-card">
         <div class="flags"><span class="flag flag-eb">EB</span></div>
         <div class="insight-title">Target audience is actively in the feed — Salesperson is #1 viewer demographic</div>
-        <div class="insight-body">Video demographics confirm the primary hire persona is watching: Salesperson at 9.5% of viewers. Software Developers at 6.3% indicate career-shifter potential. HR Specialists at 2.7% represent internal amplifiers who can share within their own networks.</div>
-        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Maintain current targeting. Add explicit 'experienced sales agent' and 'career-shifter' language in captions to reinforce algorithmic persona matching and signal intent to the right audience.</span></div>
+        <div class="insight-body">Video demographics confirm the primary hire persona is watching: Salesperson at 9.5% of viewers. Software Developers at 6.3% indicate career-shifter potential. HR Specialists at 2.7% represent internal amplifiers.</div>
+        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Maintain current targeting. Add explicit 'experienced sales agent' and 'career-shifter' language in captions to reinforce algorithmic persona matching.</span></div>
       </div>
     </div>
   </div>
 
-  <!-- TABLE -->
   <div id="table" class="section">
     <div class="table-wrap">
       <div class="table-scroll">
         <table>
-          <thead>
-            <tr><th>Date</th><th>Caption</th><th>Type</th><th>Impressions</th><th>Reach</th><th>Eng%</th><th>Clicks</th><th>CTR%</th><th>React.</th><th>Comm.</th><th>Reposts</th><th>+Followers</th><th>Page Views</th></tr>
-          </thead>
+          <thead><tr><th>Date</th><th>Caption</th><th>Type</th><th>Impressions</th><th>Reach</th><th>Eng%</th><th>Clicks</th><th>CTR%</th><th>React.</th><th>Comm.</th><th>Reposts</th><th>+Followers</th><th>Page Views</th></tr></thead>
           <tbody>
-            <tr>
-              <td class="td-date">Apr 26</td><td class="td-caption">For real estate sales professionals ready for more</td>
-              <td><span class="td-type" style="background:#C8401A18;color:#C8401A">Video</span></td>
-              <td class="td-bold">15,240</td><td>10,963</td><td class="td-eng">6.7%</td><td>953</td><td class="td-muted">6.3%</td><td>53</td><td>0</td><td class="td-reposts">10</td><td class="td-followers">3</td><td class="td-muted">110</td>
-            </tr>
-            <tr>
-              <td class="td-date">Apr 28</td><td class="td-caption">Q1 target. Hit.</td>
-              <td><span class="td-type" style="background:#1D4ED818;color:#1D4ED8">Carousel</span></td>
-              <td class="td-bold">5,880</td><td>4,161</td><td class="td-eng">49.1%</td><td>2,808</td><td class="td-muted">47.8%</td><td>53</td><td>8</td><td class="td-reposts">21</td><td class="td-followers">1</td><td class="td-muted">53</td>
-            </tr>
-            <tr>
-              <td class="td-date">Apr 29</td><td class="td-caption">Nawy Voices — The bar set by someone who engages with talent daily</td>
-              <td><span class="td-type" style="background:#15803D18;color:#15803D">Ambassador</span></td>
-              <td class="td-bold">2,647</td><td>1,790</td><td class="td-eng">9.9%</td><td>223</td><td class="td-muted">8.4%</td><td>27</td><td>3</td><td class="td-reposts">8</td><td class="td-followers">8</td><td class="td-muted">16</td>
-            </tr>
+            <tr><td class="td-date">Apr 26</td><td class="td-caption">For real estate sales professionals ready for more</td><td><span class="td-type" style="background:#C8401A18;color:#C8401A">Video</span></td><td class="td-bold">15,240</td><td>10,963</td><td class="td-eng">6.7%</td><td>953</td><td class="td-muted">6.3%</td><td>53</td><td>0</td><td class="td-reposts">10</td><td class="td-followers">3</td><td class="td-muted">110</td></tr>
+            <tr><td class="td-date">Apr 28</td><td class="td-caption">Q1 target. Hit.</td><td><span class="td-type" style="background:#1D4ED818;color:#1D4ED8">Carousel</span></td><td class="td-bold">5,880</td><td>4,161</td><td class="td-eng">49.1%</td><td>2,808</td><td class="td-muted">47.8%</td><td>53</td><td>8</td><td class="td-reposts">21</td><td class="td-followers">1</td><td class="td-muted">53</td></tr>
+            <tr><td class="td-date">Apr 29</td><td class="td-caption">Nawy Voices — The bar set by someone who engages with talent daily</td><td><span class="td-type" style="background:#15803D18;color:#15803D">Ambassador</span></td><td class="td-bold">2,647</td><td>1,790</td><td class="td-eng">9.9%</td><td>223</td><td class="td-muted">8.4%</td><td>27</td><td>3</td><td class="td-reposts">8</td><td class="td-followers">8</td><td class="td-muted">16</td></tr>
           </tbody>
         </table>
       </div>
@@ -257,12 +213,12 @@ function switchTab(id, btn) {
 }
 
 var LABELS = ['Apr 26','Apr 28','Apr 29'];
-var chartOpts = {
+var baseOpts = {
   responsive:true, maintainAspectRatio:false,
   plugins:{ legend:{display:false}, tooltip:{
     backgroundColor:'#fff', titleColor:'#A8A09A', bodyColor:'#1A1714',
     borderColor:'#E7E3DC', borderWidth:1, padding:10,
-    callbacks:{ label: function(c){ return ' '+c.dataset.label+': '+c.parsed.y.toLocaleString(); }}
+    callbacks:{ label:function(c){ return ' '+c.dataset.label+': '+c.parsed.y.toLocaleString(); }}
   }},
   scales:{
     x:{ grid:{display:false}, ticks:{font:{size:10},color:'#A8A09A'}, border:{display:false} },
@@ -270,32 +226,25 @@ var chartOpts = {
   }
 };
 
-new Chart(document.getElementById('chartImpr').getContext('2d'),{
+var chartImpr = new Chart(document.getElementById('chartImpr').getContext('2d'),{
   type:'bar',
   data:{ labels:LABELS, datasets:[{ label:'Impressions', data:[15240,5880,2647], backgroundColor:['#C8401A','#E8E3DB','#E8E3DB'], borderRadius:4 }] },
-  options: JSON.parse(JSON.stringify(chartOpts))
+  options:JSON.parse(JSON.stringify(baseOpts))
 });
-
-new Chart(document.getElementById('chartFoll').getContext('2d'),{
+var chartFoll = new Chart(document.getElementById('chartFoll').getContext('2d'),{
   type:'bar',
   data:{ labels:LABELS, datasets:[{ label:'Followers Gained', data:[3,1,8], backgroundColor:['#D1FAE5','#D1FAE5','#15803D'], borderRadius:4 }] },
-  options: JSON.parse(JSON.stringify(chartOpts))
+  options:JSON.parse(JSON.stringify(baseOpts))
 });
-
-new Chart(document.getElementById('chartRR').getContext('2d'),{
+var chartRR = new Chart(document.getElementById('chartRR').getContext('2d'),{
   type:'bar',
   data:{ labels:LABELS, datasets:[
     { label:'Reactions', data:[53,53,27], backgroundColor:'#C8401A', borderRadius:3 },
     { label:'Reposts',   data:[10,21,8],  backgroundColor:'#93C5FD', borderRadius:3 }
   ]},
-  options:(function(){
-    var o=JSON.parse(JSON.stringify(chartOpts));
-    o.plugins.tooltip.callbacks.label=function(c){ return ' '+c.dataset.label+': '+c.parsed.y; };
-    return o;
-  })()
+  options:(function(){ var o=JSON.parse(JSON.stringify(baseOpts)); return o; })()
 });
 
-// Demographics
 var demos=[{r:'Salesperson',p:9.5},{r:'Software Developer',p:6.3},{r:'HR Specialist',p:2.7},{r:'Accountant',p:2.5},{r:'Marketing Specialist',p:2.4}];
 var demoEl=document.getElementById('demo');
 demos.forEach(function(d,i){
@@ -303,6 +252,86 @@ demos.forEach(function(d,i){
   var w=((d.p/9.5)*100).toFixed(1)+'%';
   demoEl.innerHTML+='<div class="demo-row"><div class="demo-header"><span class="demo-role">'+d.r+'</span><span class="demo-pct">'+d.p+'%</span></div><div class="demo-bar-bg"><div class="demo-bar-fill" style="width:'+w+';background:'+fill+'"></div></div></div>';
 });
+
+// ── PDF EXPORT ────────────────────────────────────────────────────────────────
+function downloadPDF() {
+  var btn = document.getElementById('pdf-btn');
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+
+  // Build a full-page wrapper with all sections visible
+  var wrap = document.createElement('div');
+  wrap.style.cssText = 'width:900px;background:#F5F4F0;font-family:Work Sans,sans-serif;padding:0;';
+
+  // Header (hide button)
+  var hdr = document.getElementById('main-header').cloneNode(true);
+  hdr.querySelector('#pdf-btn').style.display = 'none';
+  wrap.appendChild(hdr);
+
+  // KPIs
+  wrap.appendChild(document.getElementById('main-kpis').cloneNode(true));
+
+  // Section title helper
+  function sectionTitle(text) {
+    var d = document.createElement('div');
+    d.style.cssText = 'font-family:Lora,serif;font-size:13px;font-weight:700;color:#A8A09A;text-transform:uppercase;letter-spacing:0.1em;padding:20px 24px 4px;';
+    d.textContent = text;
+    return d;
+  }
+
+  // Overview — replace canvases with images
+  wrap.appendChild(sectionTitle('Overview'));
+  var ovClone = document.getElementById('overview').cloneNode(true);
+  ovClone.style.display = 'block';
+  var origCanvases = document.getElementById('overview').querySelectorAll('canvas');
+  var cloneCanvases = ovClone.querySelectorAll('canvas');
+  origCanvases.forEach(function(cv, i) {
+    var img = document.createElement('img');
+    img.src = cv.toDataURL('image/png');
+    img.style.cssText = 'width:100%;height:170px;object-fit:fill;display:block;';
+    cloneCanvases[i].parentNode.replaceChild(img, cloneCanvases[i]);
+  });
+  wrap.appendChild(ovClone);
+
+  // Insights
+  wrap.appendChild(sectionTitle('Insights & Recommendations'));
+  var insClone = document.getElementById('insights').cloneNode(true);
+  insClone.style.cssText = 'display:block;';
+  insClone.querySelector('div').style.maxWidth = '100%';
+  wrap.appendChild(insClone);
+
+  // Table
+  wrap.appendChild(sectionTitle('Data Table'));
+  var tblClone = document.getElementById('table').cloneNode(true);
+  tblClone.style.display = 'block';
+  wrap.appendChild(tblClone);
+
+  // Footer
+  wrap.appendChild(document.querySelector('footer').cloneNode(true));
+
+  // Attach offscreen
+  wrap.style.position = 'fixed';
+  wrap.style.left = '-9999px';
+  wrap.style.top = '0';
+  document.body.appendChild(wrap);
+
+  html2pdf().set({
+    margin: [8,8,8,8],
+    filename: 'Nawy-Primary-Accelerator-Tracker.pdf',
+    image: { type:'jpeg', quality:0.95 },
+    html2canvas: { scale:1.5, useCORS:true, logging:false },
+    jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
+    pagebreak: { mode:['avoid-all'] }
+  }).from(wrap).save().then(function(){
+    document.body.removeChild(wrap);
+    btn.textContent = '↓ Download PDF';
+    btn.disabled = false;
+  }).catch(function(){
+    document.body.removeChild(wrap);
+    btn.textContent = '↓ Download PDF';
+    btn.disabled = false;
+  });
+}
 </script>
 </body>
 </html>
