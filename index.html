@@ -8,78 +8,73 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#FAFAF7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0C314E;font-size:14px;line-height:1.5;}
 
-/* HEADER */
-.hd{background:#FDFDFC;border-bottom:2px solid #FF5E00;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12;position:sticky;top:0;z-index:10;}
-.hd-left h1{font-size:18px;font-weight:700;color:#0C314E;letter-spacing:-.02em;}
-.hd-left h1 span{color:#FF5E00;}
-.hd-left p{font-size:11px;color:#8B8985;margin-top:3px;}
-.hd-right{font-size:11px;color:#8B8985;text-align:right;flex-shrink:0;}
-.period-badge{display:inline-block;background:#FFF2EB;color:#FF5E00;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;margin-top:4px;letter-spacing:.04em;}
+.hd{background:#FDFDFC;border-bottom:3px solid #FF5E00;padding:16px 20px;}
+.hd h1{font-size:18px;font-weight:700;color:#0C314E;letter-spacing:-.02em;}
+.hd h1 span{color:#FF5E00;}
+.hd p{font-size:11px;color:#8B8985;margin-top:3px;}
+.hd-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12;}
+.badge{display:inline-block;background:#FFF2EB;color:#FF5E00;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;margin-top:6px;letter-spacing:.04em;}
+.pdf-note{font-size:10px;color:#8B8985;margin-top:8px;padding:8px 12px;background:#F4F1EA;border-radius:8px;border-left:2px solid #D7CFC7;}
+.pdf-note strong{color:#0C314E;}
 
-/* KPIS */
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);background:#FDFDFC;border-bottom:1px solid #EFE9E3;}
 .kpi{padding:16px 18px;border-right:1px solid #EFE9E3;}
 .kpi:last-child{border-right:none;}
 .kpi-l{font-size:9px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#8B8985;margin-bottom:6px;}
-.kpi-v{font-size:26px;font-weight:700;color:#0C314E;line-height:1;font-variant-numeric:tabular-nums;}
+.kpi-v{font-size:26px;font-weight:700;color:#0C314E;line-height:1;}
 .kpi-s{font-size:10px;color:#8B8985;margin-top:4px;}
 
-/* SECTION HEADERS */
-.sec-hd{padding:24px 20px 12px;display:flex;align-items:center;gap:10;}
-.sec-hd h2{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8B8985;}
-.sec-hd::after{content:'';flex:1;height:1px;background:#EFE9E3;}
+.sec{padding:24px 16px 8px;}
+.sec h2{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8B8985;padding-bottom:10px;border-bottom:1px solid #EFE9E3;display:flex;align-items:center;gap:8px;}
+.sec h2::before{content:'';display:inline-block;width:3px;height:14px;background:#FF5E00;border-radius:2px;}
 
-/* CARDS */
-main{padding:0 16px 32px;}
+main{padding:0 16px 40px;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .card{background:#FDFDFC;border-radius:12px;border:1px solid #EFE9E3;padding:18px;box-shadow:0 1px 3px rgba(12,49,78,.05);}
 .card-l{font-size:9px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#8B8985;margin-bottom:14px;}
 .card-sl{font-size:10px;color:#8B8985;margin-top:-10px;margin-bottom:12px;}
 
-/* CSS BAR CHARTS */
-.bar-chart{display:flex;align-items:flex-end;gap:10px;height:140px;padding-bottom:24px;position:relative;}
-.bar-chart::after{content:'';position:absolute;bottom:24px;left:0;right:0;height:1px;background:#EFE9E3;}
-.bar-col{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
-.bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:opacity .2s;}
-.bar-lbl{font-size:9px;color:#8B8985;white-space:nowrap;position:absolute;bottom:4px;width:100%;text-align:center;}
-.bar-val{font-size:9px;font-weight:600;color:#0C314E;}
-
-/* GROUPED BARS */
-.bar-group{display:flex;gap:3px;align-items:flex-end;flex:1;}
+.bar-chart{display:flex;align-items:flex-end;gap:10px;height:130px;padding-bottom:22px;position:relative;margin-bottom:4px;}
+.bar-chart::after{content:'';position:absolute;bottom:22px;left:0;right:0;height:1px;background:#EFE9E3;}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;height:100%;justify-content:flex-end;position:relative;}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:3px;}
+.bar-lbl{font-size:9px;color:#8B8985;position:absolute;bottom:-18px;white-space:nowrap;}
+.bar-val{font-size:10px;font-weight:600;color:#0C314E;}
+.bar-group{display:flex;gap:3px;align-items:flex-end;width:100%;}
 .bar-group .bar{flex:1;}
 
-/* HORIZONTAL BARS (demographics) */
-.demo-row{margin-bottom:12px;}
+.leg-row{display:flex;gap:14px;margin-top:10px;}
+.leg-i{display:flex;align-items:center;gap:5px;font-size:11px;color:#4A4A4A;}
+.leg-d{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+.demo-row{margin-bottom:11px;}
 .demo-top{display:flex;justify-content:space-between;margin-bottom:4px;}
 .demo-role{font-size:12px;color:#4A4A4A;}
 .demo-pct{font-size:12px;font-weight:600;color:#0C314E;}
 .demo-bg{height:4px;background:#EFE9E3;border-radius:2px;}
 .demo-fill{height:100%;border-radius:2px;}
 
-/* POST LEGEND */
-.post-leg{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:14px 18px;}
-.post-leg-l{font-size:9px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#8B8985;width:100%;}
+.post-leg{display:flex;flex-direction:column;gap:10px;padding:14px 18px;}
+.post-leg-l{font-size:9px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#8B8985;}
 .post-item{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
 .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.post-date{font-size:12px;color:#4A4A4A;font-weight:500;}
+.post-date{font-size:12px;color:#4A4A4A;font-weight:600;}
 .post-cap{font-size:11px;color:#8B8985;}
 .tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;}
 
-/* INSIGHTS */
-.i-meta{font-size:9px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#8B8985;margin-bottom:14px;padding:0 4px;}
-.i-card{background:#FDFDFC;border-radius:12px;border:1px solid #EFE9E3;padding:18px;margin-bottom:12px;box-shadow:0 1px 3px rgba(12,49,78,.05);}
-.flags{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
+.i-meta{font-size:9px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#8B8985;margin-bottom:12px;}
+.i-card{background:#FDFDFC;border-radius:12px;border:1px solid #EFE9E3;padding:18px;margin-bottom:10px;box-shadow:0 1px 3px rgba(12,49,78,.05);}
+.flags{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap;}
 .flag{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:10px;}
 .f-eb{background:#E5F1F9;color:#015C9A;}
 .f-ct{background:#FFF2EB;color:#CC4800;}
 .f-mk{background:#E8F9F8;color:#2E9D94;}
-.i-title{font-size:14px;font-weight:600;color:#0C314E;margin-bottom:7px;line-height:1.4;}
-.i-body{font-size:12px;color:#4A4A4A;line-height:1.7;margin-bottom:11px;}
-.i-action{border-top:1px solid #EFE9E3;padding-top:10px;display:flex;gap:8px;align-items:flex-start;}
+.i-title{font-size:13px;font-weight:600;color:#0C314E;margin-bottom:6px;line-height:1.4;}
+.i-body{font-size:12px;color:#4A4A4A;line-height:1.7;margin-bottom:10px;}
+.i-action{border-top:1px solid #EFE9E3;padding-top:9px;display:flex;gap:8px;align-items:flex-start;}
 .a-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#FF5E00;flex-shrink:0;padding-top:2px;}
 .a-txt{font-size:12px;color:#4A4A4A;line-height:1.6;}
 
-/* TABLE */
 .tbl-wrap{background:#FDFDFC;border-radius:12px;border:1px solid #EFE9E3;overflow:hidden;box-shadow:0 1px 3px rgba(12,49,78,.05);}
 .tbl-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -88,28 +83,22 @@ th{text-align:left;padding:10px 12px;font-size:9px;font-weight:600;letter-spacin
 tbody tr{border-bottom:1px solid #F4F1EA;}
 tbody tr:last-child{border-bottom:none;}
 td{padding:12px 12px;color:#0C314E;}
-.td-dt{color:#4A4A4A;font-weight:500;white-space:nowrap;}
+.td-dt{color:#4A4A4A;font-weight:600;white-space:nowrap;}
 .td-cap{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#4A4A4A;}
-.td-eng{color:#FF5E00;font-weight:600;}
+.td-eng{color:#FF5E00;font-weight:700;}
 .td-rep{color:#015C9A;font-weight:500;}
 .td-fol{color:#1A9E55;font-weight:700;}
 .td-m{color:#4A4A4A;}
-.td-b{font-weight:600;}
+.td-b{font-weight:700;}
 
-/* FOOTER */
-footer{background:#FDFDFC;border-top:1px solid #EFE9E3;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+footer{background:#FDFDFC;border-top:1px solid #EFE9E3;padding:12px 20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;}
 footer span{font-size:10px;color:#8B8985;}
-
-/* LEGEND ROW */
-.leg-row{display:flex;gap:14px;margin-top:8px;}
-.leg-i{display:flex;align-items:center;gap:5px;font-size:11px;color:#4A4A4A;}
-.leg-d{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
 
 @media(max-width:580px){
   .grid2{grid-template-columns:1fr;}
   .kpis{grid-template-columns:repeat(2,1fr);}
   .kpi:nth-child(2){border-right:none;}
-  .hd{flex-wrap:wrap;}
+  .hd-row{flex-direction:column;}
 }
 </style>
 </head>
@@ -117,12 +106,15 @@ footer span{font-size:10px;color:#8B8985;}
 
 <!-- HEADER -->
 <div class="hd">
-  <div class="hd-left">
-    <h1><span>Nawy</span> &nbsp;LinkedIn EB Accelerator Dashboard</h1>
-    <p>Primary Sales · Apr 26 – May 29, 2026 · 3 posts tracked</p>
+  <div class="hd-row">
+    <div>
+      <h1><span>Nawy</span> &nbsp;LinkedIn EB Accelerator Dashboard</h1>
+      <p>Primary Sales · Apr 26 – May 29, 2026 · 3 posts tracked</p>
+      <div class="badge">Day 5 of 34 · 29 days remaining</div>
+    </div>
   </div>
-  <div class="hd-right">
-    <div class="period-badge">Day 5 of 34 · 29 days left</div>
+  <div class="pdf-note" style="margin-top:10px;">
+    <strong>Save as PDF:</strong> Tap Share → Print → pinch-zoom out on preview → tap Share again → Save to Files
   </div>
 </div>
 
@@ -137,73 +129,46 @@ footer span{font-size:10px;color:#8B8985;}
 <main>
 
 <!-- OVERVIEW -->
-<div class="sec-hd"><h2>Overview</h2></div>
+<div class="sec"><h2>Overview</h2></div>
 <div class="grid2">
 
-  <!-- Impressions chart -->
   <div class="card">
     <div class="card-l">Impressions by Post</div>
     <div class="bar-chart">
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-val">15.2K</div>
-        <div class="bar" style="height:100%;background:#FF5E00;width:100%;"></div>
-        <span class="bar-lbl">Apr 26</span>
-      </div>
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-val">5.9K</div>
-        <div class="bar" style="height:38.6%;background:#D7CFC7;width:100%;"></div>
-        <span class="bar-lbl">Apr 28</span>
-      </div>
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-val">3.1K</div>
-        <div class="bar" style="height:20.3%;background:#D7CFC7;width:100%;"></div>
-        <span class="bar-lbl">Apr 29</span>
-      </div>
+      <div class="bar-col"><div class="bar-val">15.2K</div><div class="bar" style="height:100%;background:#FF5E00;width:100%;"></div><span class="bar-lbl">Apr 26</span></div>
+      <div class="bar-col"><div class="bar-val">5.9K</div><div class="bar" style="height:38.6%;background:#D7CFC7;width:100%;"></div><span class="bar-lbl">Apr 28</span></div>
+      <div class="bar-col"><div class="bar-val">3.1K</div><div class="bar" style="height:20.3%;background:#D7CFC7;width:100%;"></div><span class="bar-lbl">Apr 29</span></div>
     </div>
   </div>
 
-  <!-- Followers chart -->
   <div class="card">
     <div class="card-l">Followers Gained</div>
     <div class="bar-chart">
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-val">3</div>
-        <div class="bar" style="height:27.3%;background:#C8F5DC;width:100%;"></div>
-        <span class="bar-lbl">Apr 26</span>
-      </div>
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-val">1</div>
-        <div class="bar" style="height:9.1%;background:#C8F5DC;width:100%;"></div>
-        <span class="bar-lbl">Apr 28</span>
-      </div>
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-val">8</div>
-        <div class="bar" style="height:100%;background:#44D580;width:100%;"></div>
-        <span class="bar-lbl">Apr 29</span>
-      </div>
+      <div class="bar-col"><div class="bar-val">3</div><div class="bar" style="height:27.3%;background:#C8F5DC;width:100%;"></div><span class="bar-lbl">Apr 26</span></div>
+      <div class="bar-col"><div class="bar-val">1</div><div class="bar" style="height:9.1%;background:#C8F5DC;width:100%;"></div><span class="bar-lbl">Apr 28</span></div>
+      <div class="bar-col"><div class="bar-val">11</div><div class="bar" style="height:100%;background:#44D580;width:100%;"></div><span class="bar-lbl">Apr 29</span></div>
     </div>
   </div>
 
-  <!-- Reactions + Reposts -->
   <div class="card">
     <div class="card-l">Reactions &amp; Reposts</div>
     <div class="bar-chart">
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-group" style="height:100%;width:100%;align-items:flex-end;">
+      <div class="bar-col">
+        <div class="bar-group" style="height:100%;align-items:flex-end;">
           <div class="bar" style="height:100%;background:#FF5E00;"></div>
           <div class="bar" style="height:47.6%;background:#015C9A;"></div>
         </div>
         <span class="bar-lbl">Apr 26</span>
       </div>
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-group" style="height:100%;width:100%;align-items:flex-end;">
+      <div class="bar-col">
+        <div class="bar-group" style="height:100%;align-items:flex-end;">
           <div class="bar" style="height:100%;background:#FF5E00;"></div>
           <div class="bar" style="height:100%;background:#015C9A;"></div>
         </div>
         <span class="bar-lbl">Apr 28</span>
       </div>
-      <div class="bar-col" style="position:relative;">
-        <div class="bar-group" style="height:100%;width:100%;align-items:flex-end;">
+      <div class="bar-col">
+        <div class="bar-group" style="height:100%;align-items:flex-end;">
           <div class="bar" style="height:52.8%;background:#FF5E00;"></div>
           <div class="bar" style="height:38.1%;background:#015C9A;"></div>
         </div>
@@ -216,7 +181,6 @@ footer span{font-size:10px;color:#8B8985;}
     </div>
   </div>
 
-  <!-- Demographics -->
   <div class="card">
     <div class="card-l">Video Viewer Demographics</div>
     <div class="card-sl">Apr 26 video · by job title</div>
@@ -229,30 +193,29 @@ footer span{font-size:10px;color:#8B8985;}
 
 </div>
 
-<!-- Post legend -->
-<div class="card post-leg">
-  <div class="post-leg-l">Posts in this period</div>
+<div class="card post-leg" style="margin-bottom:14px;">
+  <div class="post-leg-l">Posts tracked</div>
   <div class="post-item"><div class="dot" style="background:#FF5E00;"></div><span class="post-date">Apr 26</span><span class="post-cap">For real estate sales professionals ready for more</span><span class="tag" style="background:#FFF2EB;color:#FF5E00;">Video</span></div>
   <div class="post-item"><div class="dot" style="background:#015C9A;"></div><span class="post-date">Apr 28</span><span class="post-cap">Q1 target. Hit.</span><span class="tag" style="background:#E5F1F9;color:#015C9A;">Carousel</span></div>
   <div class="post-item"><div class="dot" style="background:#5ECCC0;"></div><span class="post-date">Apr 29</span><span class="post-cap">Nawy Voices — The bar set by someone who engages with talent daily</span><span class="tag" style="background:#E8F9F8;color:#2E9D94;">Ambassador</span></div>
 </div>
 
 <!-- INSIGHTS -->
-<div class="sec-hd"><h2>Insights &amp; Recommendations</h2></div>
+<div class="sec"><h2>Insights &amp; Recommendations</h2></div>
 <div class="i-meta">Analysis · Apr 30, 2026 · 3 posts · Apr 26–29</div>
 
-<div class="i-card"><div class="flags"><span class="flag f-eb">EB</span></div><div class="i-title">Ambassador content converts followers 9x better per reach</div><div class="i-body">Nawy Voices (Apr 29) achieved a 0.45% follow rate — 8 followers from 1,790 reached. The video (Apr 26) achieved 0.03% — 3 from 10,963. Real employees speaking to aspiring professionals consistently outperform brand voice for audience growth on LinkedIn.</div><div class="i-action"><span class="a-lbl">Action</span><span class="a-txt">Scale ambassador posts to 2x per week. Prioritise active Property Consultants and team leads sharing personal trajectory stories, not polished brand copy.</span></div></div>
+<div class="i-card"><div class="flags"><span class="flag f-eb">EB</span></div><div class="i-title">Ambassador content converts followers 9x better per reach</div><div class="i-body">Nawy Voices (Apr 29) achieved a 0.53% follow rate — 11 followers from 2,086 reached. The video (Apr 26) achieved 0.03% — 3 from 10,963. Real employees speaking to aspiring professionals consistently outperform brand voice for audience growth on LinkedIn.</div><div class="i-action"><span class="a-lbl">Action</span><span class="a-txt">Scale ambassador posts to 2x per week. Prioritise active Property Consultants and team leads sharing personal trajectory stories, not polished brand copy.</span></div></div>
 
 <div class="i-card"><div class="flags"><span class="flag f-ct">Content</span></div><div class="i-title">Video hook isn't retaining — 10s avg watch time signals immediate drop-off</div><div class="i-body">Apr 26 video reached 10,963 members and drew 4,594 views, but average watch time is only 10s. The opener "For real estate sales professionals ready for more" is too generic to stop scroll in a competitive feed.</div><div class="i-action"><span class="a-lbl">Action</span><span class="a-txt">Lead with a specific, provocative claim: 'Most agents close 30% less than they should — here's why.' Test a visual cold open with no intro branding.</span></div></div>
 
 <div class="i-card"><div class="flags"><span class="flag f-ct">Content</span><span class="flag f-mk">Marketing</span></div><div class="i-title">Achievement content drives strongest virality — but every post is missing a follow CTA</div><div class="i-body">Q1 Target. Hit. earned 21 reposts and 8 comments on 4,161 reach. But only 1 follower was gained despite 53 reactions. None of the 3 posts included an explicit follow CTA.</div><div class="i-action"><span class="a-lbl">Action</span><span class="a-txt">Add to every post: 'Follow Nawy for weekly real estate career insights.' Especially critical on high-virality content where amplification is already happening.</span></div></div>
 
-<div class="i-card"><div class="flags"><span class="flag f-mk">Marketing</span></div><div class="i-title">Video is the reach engine — structure the weekly cadence around it</div><div class="i-body">Video reached 10,963 vs carousel's 4,161 and ambassador's 1,790 — 2.6x the next format. Carousel's 49.1% eng rate is inflated by page-swipes and is not a direct engagement comparator.</div><div class="i-action"><span class="a-lbl">Action</span><span class="a-txt">Weekly rhythm: Video Monday (reach), Carousel mid-week (engagement depth), Ambassador end-of-week (follow conversion).</span></div></div>
+<div class="i-card"><div class="flags"><span class="flag f-mk">Marketing</span></div><div class="i-title">Video is the reach engine — structure the weekly cadence around it</div><div class="i-body">Video reached 10,963 vs carousel's 4,161 and ambassador's 2,086 — 5x the ambassador format. Carousel's 49.1% eng rate is inflated by page-swipes and is not a direct comparator.</div><div class="i-action"><span class="a-lbl">Action</span><span class="a-txt">Weekly rhythm: Video Monday (reach), Carousel mid-week (engagement depth), Ambassador end-of-week (follow conversion).</span></div></div>
 
 <div class="i-card"><div class="flags"><span class="flag f-eb">EB</span></div><div class="i-title">Target audience is actively in the feed — Salesperson is #1 viewer demographic</div><div class="i-body">Video demographics confirm the primary hire persona is watching: Salesperson at 9.5%. Software Developers at 6.3% indicate career-shifter potential. HR Specialists at 2.7% are internal amplifiers.</div><div class="i-action"><span class="a-lbl">Action</span><span class="a-txt">Maintain current targeting. Add 'experienced sales agent' and 'career-shifter' language in captions to reinforce algorithmic persona matching.</span></div></div>
 
 <!-- DATA TABLE -->
-<div class="sec-hd"><h2>Data Table</h2></div>
+<div class="sec"><h2>Data Table</h2></div>
 <div class="tbl-wrap"><div class="tbl-scroll">
   <table>
     <thead><tr><th>Date</th><th>Caption</th><th>Type</th><th>Impr.</th><th>Reach</th><th>Eng%</th><th>Clicks</th><th>CTR%</th><th>React.</th><th>Comm.</th><th>Reposts</th><th>+Followers</th><th>Page Views</th></tr></thead>
@@ -268,7 +231,7 @@ footer span{font-size:10px;color:#8B8985;}
 
 <footer>
   <span>Nawy · LinkedIn EB Accelerator Dashboard · Apr 26 – May 29, 2026</span>
-  <span>Updated Apr 30, 2026 (19:05)</span>
+  <span>Updated Apr 30, 2026</span>
 </footer>
 
 </body>
