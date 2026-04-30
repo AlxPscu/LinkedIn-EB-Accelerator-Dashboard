@@ -1,973 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nawy · LinkedIn EB Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/recharts@2.8.0/umd/Recharts.js"></script>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{background:#F5F4F0;font-family:'Work Sans',sans-serif;color:#1A1714;}
-    ::-webkit-scrollbar{width:3px;height:3px;}
-    ::-webkit-scrollbar-thumb{background:#D4CFC8;border-radius:2px;}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-bottom:1px solid #E7E3DC;}
-    @media print{
-      .no-print{display:none!important;}
-      body{background:white;}
-    }
-    @media(max-width:640px){
-      .grid2{grid-template-columns:1fr!important;}
-      .kpis{grid-template-columns:repeat(2,1fr)!important;}
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Primary Accelerator Tracker · Nawy</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#F5F4F0;font-family:'Work Sans',sans-serif;color:#1A1714;font-size:14px;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:#D4CFC8;border-radius:2px;}
+a{text-decoration:none;}
+
+/* Layout */
+.header{background:#fff;border-bottom:1px solid #E7E3DC;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12;}
+.header-title{font-family:'Lora',serif;font-weight:700;font-size:20px;color:#C8401A;letter-spacing:-0.02em;}
+.header-sub{font-weight:500;font-size:13px;color:#6B635A;}
+.header-meta{font-size:11px;color:#A8A09A;letter-spacing:0.03em;margin-top:4px;}
+.header-divider{color:#E7E3DC;margin:0 8px;}
+.btn-pdf{background:none;color:#C8401A;border:1.5px solid #C8401A;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Work Sans',sans-serif;flex-shrink:0;}
+.btn-pdf:hover{background:#FEF0EB;}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-bottom:1px solid #E7E3DC;}
+.kpi{padding:18px 22px;border-right:1px solid #E7E3DC;}
+.kpi:last-child{border-right:none;}
+.kpi-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:6px;}
+.kpi-value{font-family:'Lora',serif;font-size:28px;font-weight:700;color:#1A1714;line-height:1;}
+.kpi-sub{font-size:11px;color:#A8A09A;margin-top:5px;}
+
+.tabs{background:#fff;border-bottom:1px solid #E7E3DC;display:flex;padding-left:20px;}
+.tab{background:none;border:none;cursor:pointer;padding:11px 18px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;font-family:'Work Sans',sans-serif;color:#A8A09A;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.tab.active{color:#C8401A;border-bottom-color:#C8401A;}
+
+main{padding:24px;}
+.section{display:none;}
+.section.active{display:block;}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.card{background:#fff;border-radius:12px;border:1px solid #E7E3DC;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.card-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:14px;}
+.card-sublabel{font-size:11px;color:#A8A09A;margin-top:-10px;margin-bottom:14px;}
+.chart-wrap{position:relative;height:170px;}
+
+.legend{display:flex;gap:16px;margin-top:10px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#6B635A;}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
+.post-legend{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:14px 20px;}
+.post-legend-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;}
+.post-item{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.post-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.post-date{font-size:12px;color:#6B635A;font-weight:500;}
+.post-cap{font-size:11px;color:#A8A09A;}
+.post-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;}
+
+/* Demographics */
+.demo-row{margin-bottom:13px;}
+.demo-header{display:flex;justify-content:space-between;margin-bottom:5px;}
+.demo-role{font-size:12px;color:#6B635A;}
+.demo-pct{font-size:12px;font-weight:600;color:#1A1714;}
+.demo-bar-bg{height:3px;background:#F0EDE8;border-radius:2px;}
+.demo-bar-fill{height:100%;border-radius:2px;}
+
+/* Insights */
+.insights-meta{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:16px;}
+.insight-card{background:#fff;border-radius:12px;border:1px solid #E7E3DC;padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.flags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.flag{font-size:9px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;padding:3px 8px;border-radius:10px;}
+.flag-eb{background:#DBEAFE;color:#1E40AF;}
+.flag-content{background:#FEF3C7;color:#92400E;}
+.flag-marketing{background:#D1FAE5;color:#065F46;}
+.insight-title{font-family:'Lora',serif;font-size:14px;font-weight:600;color:#1A1714;margin-bottom:8px;line-height:1.45;}
+.insight-body{font-size:12px;color:#6B635A;line-height:1.75;margin-bottom:12px;}
+.insight-action{border-top:1px solid #E7E3DC;padding-top:10px;display:flex;gap:10px;align-items:flex-start;}
+.action-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C8401A;flex-shrink:0;padding-top:2px;}
+.action-text{font-size:12px;color:#6B635A;line-height:1.65;}
+
+/* Table */
+.table-wrap{background:#fff;border-radius:12px;border:1px solid #E7E3DC;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.table-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead tr{border-bottom:1px solid #E7E3DC;background:#FAFAF8;}
+th{text-align:left;padding:10px 14px;font-size:9px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;white-space:nowrap;}
+tbody tr{border-bottom:1px solid #F5F4F0;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover td{background:#FAFAF8;}
+td{padding:13px 14px;color:#1A1714;}
+.td-date{color:#6B635A;font-weight:500;white-space:nowrap;}
+.td-caption{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.td-type{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.td-eng{color:#C8401A;font-weight:600;}
+.td-reposts{color:#1D4ED8;font-weight:500;}
+.td-followers{color:#15803D;font-weight:700;}
+.td-muted{color:#6B635A;}
+.td-bold{font-weight:600;}
+
+footer{border-top:1px solid #E7E3DC;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;background:#fff;margin-top:8px;}
+footer span{font-size:10px;color:#A8A09A;}
+
+@media print{
+  .no-print{display:none!important;}
+  body{background:#fff;}
+  .section{display:block!important;}
+  .card{box-shadow:none!important;}
+}
+@media(max-width:640px){
+  .grid2{grid-template-columns:1fr!important;}
+  .kpis{grid-template-columns:repeat(2,1fr)!important;}
+  .kpi:nth-child(2){border-right:none;}
+  header{flex-wrap:wrap;}
+}
+</style>
 </head>
 <body>
-<div id="root"></div>
+
+<header class="header">
+  <div>
+    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px;">
+      <span class="header-title">Nawy</span>
+      <span class="header-divider">|</span>
+      <span class="header-sub">Primary Accelerator Tracker</span>
+    </div>
+    <div class="header-meta">Apr 26 – May 29, 2026 · Day 5 of 34 · 3 posts tracked · 29 days remaining</div>
+  </div>
+  <button class="btn-pdf no-print" onclick="window.print()">↓ Download PDF</button>
+</header>
+
+<div class="kpis">
+  <div class="kpi"><div class="kpi-label">Total Impressions</div><div class="kpi-value">23,767</div><div class="kpi-sub">Apr 26–29</div></div>
+  <div class="kpi"><div class="kpi-label">Total Reach</div><div class="kpi-value">16,914</div><div class="kpi-sub">unique members</div></div>
+  <div class="kpi"><div class="kpi-label">Followers Gained</div><div class="kpi-value">12</div><div class="kpi-sub">new followers</div></div>
+  <div class="kpi"><div class="kpi-label">Total Reposts</div><div class="kpi-value">39</div><div class="kpi-sub">organic shares</div></div>
+</div>
+
+<nav class="tabs no-print">
+  <button class="tab active" onclick="switchTab('overview',this)">Overview</button>
+  <button class="tab" onclick="switchTab('insights',this)">Insights</button>
+  <button class="tab" onclick="switchTab('table',this)">Data Table</button>
+</nav>
+
+<main>
+
+  <!-- OVERVIEW -->
+  <div id="overview" class="section active">
+    <div class="grid2">
+      <div class="card"><div class="card-label">Impressions by Post</div><div class="chart-wrap"><canvas id="chartImpr"></canvas></div></div>
+      <div class="card"><div class="card-label">Followers Gained</div><div class="chart-wrap"><canvas id="chartFoll"></canvas></div></div>
+      <div class="card">
+        <div class="card-label">Reactions &amp; Reposts</div>
+        <div class="chart-wrap"><canvas id="chartRR"></canvas></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#C8401A"></div>Reactions</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#93C5FD"></div>Reposts</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Video Viewer Demographics</div>
+        <div class="card-sublabel">Apr 26 video · by job title</div>
+        <div id="demo"></div>
+      </div>
+    </div>
+    <div class="card post-legend">
+      <span class="post-legend-label">Posts</span>
+      <div class="post-item"><div class="post-dot" style="background:#C8401A"></div><span class="post-date">Apr 26</span><span class="post-cap">For real estate sales professionals ready for more</span><span class="post-tag" style="background:#C8401A18;color:#C8401A">Video</span></div>
+      <div class="post-item"><div class="post-dot" style="background:#1D4ED8"></div><span class="post-date">Apr 28</span><span class="post-cap">Q1 target. Hit.</span><span class="post-tag" style="background:#1D4ED818;color:#1D4ED8">Carousel</span></div>
+      <div class="post-item"><div class="post-dot" style="background:#15803D"></div><span class="post-date">Apr 29</span><span class="post-cap">Nawy Voices — The bar set by someone who engages with talent daily</span><span class="post-tag" style="background:#15803D18;color:#15803D">Ambassador</span></div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div id="insights" class="section">
+    <div style="max-width:680px;">
+      <div class="insights-meta">Analysis · Apr 30, 2026 · 3 posts · Apr 26–29</div>
+
+      <div class="insight-card">
+        <div class="flags"><span class="flag flag-eb">EB</span></div>
+        <div class="insight-title">Ambassador content converts followers 9× better per reach</div>
+        <div class="insight-body">Nawy Voices (Apr 29) achieved a 0.45% follow rate — 8 followers from 1,790 reached. The video (Apr 26) achieved 0.03% — 3 from 10,963. Real employees speaking to aspiring professionals consistently outperform brand voice for audience growth on LinkedIn.</div>
+        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Scale ambassador posts to 2× per week. Prioritise active Property Consultants and team leads sharing personal trajectory stories — not polished brand copy.</span></div>
+      </div>
+
+      <div class="insight-card">
+        <div class="flags"><span class="flag flag-content">Content</span></div>
+        <div class="insight-title">Video hook isn't retaining — 10s avg watch time signals immediate drop-off</div>
+        <div class="insight-body">Apr 26 video reached 10,963 members and drew 4,594 views, but average watch time is only 10s. Drop-off is happening in the first seconds. The opener "For real estate sales professionals ready for more" is too generic to stop scroll in a competitive feed.</div>
+        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Lead with a specific, provocative claim: 'Most agents close 30% less than they should — here's the fix.' Test a visual cold open with no intro branding. Remove any slow fade-ins or logo reveals.</span></div>
+      </div>
+
+      <div class="insight-card">
+        <div class="flags"><span class="flag flag-content">Content</span><span class="flag flag-marketing">Marketing</span></div>
+        <div class="insight-title">Achievement content drives strongest virality — but every post is missing a follow CTA</div>
+        <div class="insight-body">Q1 Target. Hit. earned 21 reposts and 8 comments on 4,161 reach — highest virality in the set. But only 1 follower was gained despite 53 reactions. None of the 3 posts included an explicit follow CTA, leaving organic amplification without audience conversion.</div>
+        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Add to every post: 'Follow Nawy for weekly real estate career insights.' Especially critical on high-virality content where amplification is already happening organically.</span></div>
+      </div>
+
+      <div class="insight-card">
+        <div class="flags"><span class="flag flag-marketing">Marketing</span></div>
+        <div class="insight-title">Video is the reach engine — structure the weekly cadence around it</div>
+        <div class="insight-body">Video reached 10,963 vs carousel's 4,161 and ambassador's 1,790. For top-of-funnel EB awareness, video is the clear distribution winner at 2.6× the next format. Note: carousel's 49.1% eng rate is mechanically inflated by page-swipes — true comparative metrics are reposts and followers gained.</div>
+        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Weekly content rhythm: Video on Monday for reach, Carousel mid-week for engagement depth, Ambassador end-of-week for follow conversion. One format per objective.</span></div>
+      </div>
+
+      <div class="insight-card">
+        <div class="flags"><span class="flag flag-eb">EB</span></div>
+        <div class="insight-title">Target audience is actively in the feed — Salesperson is #1 viewer demographic</div>
+        <div class="insight-body">Video demographics confirm the primary hire persona is watching: Salesperson at 9.5% of viewers. Software Developers at 6.3% indicate career-shifter potential. HR Specialists at 2.7% represent internal amplifiers who can share within their own networks.</div>
+        <div class="insight-action"><span class="action-label">Action</span><span class="action-text">Maintain current targeting. Add explicit 'experienced sales agent' and 'career-shifter' language in captions to reinforce algorithmic persona matching and signal intent to the right audience.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div id="table" class="section">
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Caption</th><th>Type</th><th>Impressions</th><th>Reach</th><th>Eng%</th><th>Clicks</th><th>CTR%</th><th>React.</th><th>Comm.</th><th>Reposts</th><th>+Followers</th><th>Page Views</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-date">Apr 26</td><td class="td-caption">For real estate sales professionals ready for more</td>
+              <td><span class="td-type" style="background:#C8401A18;color:#C8401A">Video</span></td>
+              <td class="td-bold">15,240</td><td>10,963</td><td class="td-eng">6.7%</td><td>953</td><td class="td-muted">6.3%</td><td>53</td><td>0</td><td class="td-reposts">10</td><td class="td-followers">3</td><td class="td-muted">110</td>
+            </tr>
+            <tr>
+              <td class="td-date">Apr 28</td><td class="td-caption">Q1 target. Hit.</td>
+              <td><span class="td-type" style="background:#1D4ED818;color:#1D4ED8">Carousel</span></td>
+              <td class="td-bold">5,880</td><td>4,161</td><td class="td-eng">49.1%</td><td>2,808</td><td class="td-muted">47.8%</td><td>53</td><td>8</td><td class="td-reposts">21</td><td class="td-followers">1</td><td class="td-muted">53</td>
+            </tr>
+            <tr>
+              <td class="td-date">Apr 29</td><td class="td-caption">Nawy Voices — The bar set by someone who engages with talent daily</td>
+              <td><span class="td-type" style="background:#15803D18;color:#15803D">Ambassador</span></td>
+              <td class="td-bold">2,647</td><td>1,790</td><td class="td-eng">9.9%</td><td>223</td><td class="td-muted">8.4%</td><td>27</td><td>3</td><td class="td-reposts">8</td><td class="td-followers">8</td><td class="td-muted">16</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <span>Nawy · Primary Accelerator Tracker · Apr 26 – May 29, 2026</span>
+  <span>Updated Apr 30, 2026</span>
+</footer>
+
 <script>
-const {
-  useState
-} = React;
-const {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-  CartesianGrid
-} = Recharts;
-const C = {
-  accent: "#C8401A",
-  bg: "#F5F4F0",
-  surface: "#FFFFFF",
-  border: "#E7E3DC",
-  text1: "#1A1714",
-  text2: "#6B635A",
-  text3: "#A8A09A",
-  green: "#15803D",
-  greenSoft: "#D1FAE5",
-  blue: "#1D4ED8",
-  blueSoft: "#DBEAFE",
-  amberSoft: "#FEF3C7",
-  amberText: "#92400E"
-};
-const TYPE_COLOR = {
-  Video: "#C8401A",
-  Carousel: "#1D4ED8",
-  Ambassador: "#15803D"
-};
-const FLAG = {
-  EB: {
-    bg: "#DBEAFE",
-    text: "#1E40AF"
-  },
-  Content: {
-    bg: "#FEF3C7",
-    text: "#92400E"
-  },
-  Marketing: {
-    bg: "#D1FAE5",
-    text: "#065F46"
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+var LABELS = ['Apr 26','Apr 28','Apr 29'];
+var chartOpts = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{display:false}, tooltip:{
+    backgroundColor:'#fff', titleColor:'#A8A09A', bodyColor:'#1A1714',
+    borderColor:'#E7E3DC', borderWidth:1, padding:10,
+    callbacks:{ label: function(c){ return ' '+c.dataset.label+': '+c.parsed.y.toLocaleString(); }}
+  }},
+  scales:{
+    x:{ grid:{display:false}, ticks:{font:{size:10},color:'#A8A09A'}, border:{display:false} },
+    y:{ grid:{color:'#F0EDE8'}, ticks:{font:{size:10},color:'#A8A09A'}, border:{display:false} }
   }
 };
-const POSTS = [{
-  id: 1,
-  date: "Apr 26",
-  caption: "For real estate sales professionals ready for more",
-  type: "Video",
-  impressions: 15240,
-  reached: 10963,
-  engRate: 6.7,
-  clicks: 953,
-  ctr: 6.3,
-  reactions: 53,
-  comments: 0,
-  reposts: 10,
-  followersGained: 3,
-  pageViewers: 110,
-  videoViews: 4594,
-  avgWatch: 10
-}, {
-  id: 2,
-  date: "Apr 28",
-  caption: "Q1 target. Hit.",
-  type: "Carousel",
-  impressions: 5880,
-  reached: 4161,
-  engRate: 49.1,
-  clicks: 2808,
-  ctr: 47.8,
-  reactions: 53,
-  comments: 8,
-  reposts: 21,
-  followersGained: 1,
-  pageViewers: 53,
-  videoViews: null,
-  avgWatch: null
-}, {
-  id: 3,
-  date: "Apr 29",
-  caption: "Nawy Voices — The bar set by someone who engages with talent daily",
-  type: "Ambassador",
-  impressions: 2647,
-  reached: 1790,
-  engRate: 9.9,
-  clicks: 223,
-  ctr: 8.4,
-  reactions: 27,
-  comments: 3,
-  reposts: 8,
-  followersGained: 8,
-  pageViewers: 16,
-  videoViews: null,
-  avgWatch: null
-}];
-const DEMOGRAPHICS = [{
-  role: "Salesperson",
-  pct: 9.5
-}, {
-  role: "Software Developer",
-  pct: 6.3
-}, {
-  role: "HR Specialist",
-  pct: 2.7
-}, {
-  role: "Accountant",
-  pct: 2.5
-}, {
-  role: "Marketing Specialist",
-  pct: 2.4
-}];
-const INSIGHTS = [{
-  id: 1,
-  flags: ["EB"],
-  title: "Ambassador content converts followers 9× better per reach",
-  body: "Nawy Voices (Apr 29) achieved a 0.45% follow rate — 8 followers from 1,790 reached. The video (Apr 26) achieved 0.03% — 3 from 10,963. Real employees speaking to aspiring professionals consistently outperform brand voice for audience growth.",
-  action: "Scale ambassador posts to 2× per week. Prioritise active Property Consultants and team leads sharing personal trajectory stories."
-}, {
-  id: 2,
-  flags: ["Content"],
-  title: "Video hook isn't retaining — 10s avg watch time signals immediate drop-off",
-  body: "Apr 26 video reached 10,963 members and drew 4,594 views, but average watch time is only 10s. The opener 'For real estate sales professionals ready for more' is too generic to stop scroll in a competitive feed.",
-  action: "Lead with a specific claim: 'Most agents close 30% less than they should — here's the fix.' Test a visual cold open with no intro branding."
-}, {
-  id: 3,
-  flags: ["Content", "Marketing"],
-  title: "Achievement content drives strongest virality — but every post is missing a follow CTA",
-  body: "Q1 Target. Hit. earned 21 reposts and 8 comments on 4,161 reach — highest virality in the set. But only 1 follower was gained despite 53 reactions. None of the 3 posts included an explicit follow CTA.",
-  action: "Add to every post: 'Follow Nawy for weekly real estate career insights.' Especially critical on high-virality content."
-}, {
-  id: 4,
-  flags: ["Marketing"],
-  title: "Video is the reach engine — structure the weekly cadence around it",
-  body: "Video reached 10,963 vs carousel's 4,161 and ambassador's 1,790. For top-of-funnel EB awareness, video is the clear distribution winner at 2.6× the next format. Carousel's 49.1% eng rate is inflated by page-swipes.",
-  action: "Weekly rhythm: Video Monday (reach), Carousel mid-week (engagement), Ambassador end-of-week (follow conversion)."
-}, {
-  id: 5,
-  flags: ["EB"],
-  title: "Target audience is actively in the feed — Salesperson is #1 viewer demographic",
-  body: "Video demographics confirm the primary hire persona is watching: Salesperson at 9.5% of viewers. Software Developers at 6.3% indicate career-shifter potential. HR Specialists at 2.7% are internal amplifiers.",
-  action: "Maintain current targeting. Add 'experienced sales agent' and 'career-shifter' language in captions to reinforce algorithmic persona matching."
-}];
-const fmtN = n => n != null ? n.toLocaleString() : "—";
-const fmt = n => n >= 1000 ? (n / 1000).toFixed(1) + "K" : String(n || 0);
-function Tip({
-  active,
-  payload,
-  label
-}) {
-  if (!active || !payload || !payload.length) return null;
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      background: "#fff",
-      border: "1px solid #E7E3DC",
-      borderRadius: 8,
-      padding: "8px 12px",
-      fontSize: 12,
-      boxShadow: "0 4px 12px rgba(0,0,0,0.08)"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      color: "#A8A09A",
-      marginBottom: 4,
-      fontWeight: 500
-    }
-  }, label), payload.map(function (p) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: p.name,
-      style: {
-        color: p.color || "#1A1714"
-      }
-    }, p.name, ": ", /*#__PURE__*/React.createElement("strong", null, p.value != null ? p.value.toLocaleString() : ""));
-  }));
-}
-function Dashboard() {
-  const [tab, setTab] = useState("overview");
-  const [printing, setPrinting] = useState(false);
-  const totImp = POSTS.reduce(function (a, p) {
-    return a + p.impressions;
-  }, 0);
-  const totReach = POSTS.reduce(function (a, p) {
-    return a + p.reached;
-  }, 0);
-  const totFollowers = POSTS.reduce(function (a, p) {
-    return a + p.followersGained;
-  }, 0);
-  const totReposts = POSTS.reduce(function (a, p) {
-    return a + p.reposts;
-  }, 0);
-  const maxImp = Math.max.apply(null, POSTS.map(function (p) {
-    return p.impressions;
-  }));
-  const maxFol = Math.max.apply(null, POSTS.map(function (p) {
-    return p.followersGained;
-  }));
-  function handlePrint() {
-    setPrinting(true);
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        window.print();
-        setPrinting(false);
-      });
-    });
-  }
-  const showO = tab === "overview" || printing;
-  const showI = tab === "insights" || printing;
-  const showT = tab === "table" || printing;
-  const card = {
-    background: "#FFFFFF",
-    borderRadius: 12,
-    border: "1px solid #E7E3DC",
-    padding: 20,
-    boxShadow: "0 1px 4px rgba(0,0,0,0.05)"
-  };
-  return /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Work Sans',sans-serif",
-      background: "#F5F4F0",
-      minHeight: "100vh",
-      color: "#1A1714"
-    }
-  }, /*#__PURE__*/React.createElement("header", {
-    style: {
-      background: "#fff",
-      borderBottom: "1px solid #E7E3DC",
-      padding: "16px 24px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: 12
-    }
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      alignItems: "baseline",
-      gap: 10,
-      marginBottom: 5
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontFamily: "'Lora',serif",
-      fontWeight: 700,
-      fontSize: 20,
-      color: "#C8401A",
-      letterSpacing: "-0.02em"
-    }
-  }, "Nawy"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: "#E7E3DC",
-      fontSize: 14
-    }
-  }, "|"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontWeight: 500,
-      fontSize: 13,
-      color: "#6B635A"
-    }
-  }, "LinkedIn EB \xB7 Primary Sales")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: "#A8A09A",
-      letterSpacing: "0.03em"
-    }
-  }, "Apr 26 \u2013 May 29, 2026 \xB7 Day 5 of 34 \xB7 ", POSTS.length, " posts tracked \xB7 29 days remaining")), /*#__PURE__*/React.createElement("button", {
-    onClick: handlePrint,
-    style: {
-      background: "none",
-      color: "#C8401A",
-      border: "1.5px solid #C8401A",
-      borderRadius: 8,
-      padding: "8px 16px",
-      fontSize: 12,
-      fontWeight: 600,
-      cursor: "pointer",
-      fontFamily: "inherit",
-      flexShrink: 0
-    },
-    className: "no-print"
-  }, "\u2193 Download PDF")), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "repeat(4,1fr)",
-      background: "#fff",
-      borderBottom: "1px solid #E7E3DC"
-    },
-    className: "kpis"
-  }, [{
-    label: "Total Impressions",
-    value: fmtN(totImp),
-    sub: "Apr 26–29"
-  }, {
-    label: "Total Reach",
-    value: fmtN(totReach),
-    sub: "unique members"
-  }, {
-    label: "Followers Gained",
-    value: totFollowers,
-    sub: "new followers"
-  }, {
-    label: "Total Reposts",
-    value: totReposts,
-    sub: "organic shares"
-  }].map(function (k, i) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: i,
-      style: {
-        padding: "18px 22px",
-        borderRight: i < 3 ? "1px solid #E7E3DC" : "none"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 10,
-        fontWeight: 500,
-        letterSpacing: "0.09em",
-        textTransform: "uppercase",
-        color: "#A8A09A",
-        marginBottom: 6
-      }
-    }, k.label), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Lora',serif",
-        fontSize: 28,
-        fontWeight: 700,
-        color: "#1A1714",
-        lineHeight: 1
-      }
-    }, k.value), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 11,
-        color: "#A8A09A",
-        marginTop: 5
-      }
-    }, k.sub));
-  })), /*#__PURE__*/React.createElement("nav", {
-    style: {
-      background: "#fff",
-      borderBottom: "1px solid #E7E3DC",
-      display: "flex",
-      paddingLeft: 20
-    },
-    className: "no-print"
-  }, [["overview", "Overview"], ["insights", "Insights"], ["table", "Data Table"]].map(function (arr) {
-    var t = arr[0],
-      label = arr[1];
-    return /*#__PURE__*/React.createElement("button", {
-      key: t,
-      onClick: function () {
-        setTab(t);
-      },
-      style: {
-        background: "none",
-        border: "none",
-        cursor: "pointer",
-        padding: "11px 18px",
-        fontSize: 11,
-        fontWeight: 500,
-        textTransform: "uppercase",
-        letterSpacing: "0.08em",
-        color: tab === t ? "#C8401A" : "#A8A09A",
-        borderBottom: "2px solid " + (tab === t ? "#C8401A" : "transparent"),
-        fontFamily: "inherit"
-      }
-    }, label);
-  })), /*#__PURE__*/React.createElement("main", {
-    style: {
-      padding: "24px"
-    }
-  }, showO && /*#__PURE__*/React.createElement("section", null, printing && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Lora',serif",
-      fontSize: 14,
-      fontWeight: 700,
-      color: "#A8A09A",
-      marginBottom: 16,
-      textTransform: "uppercase",
-      letterSpacing: "0.1em"
-    }
-  }, "Overview"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: 16,
-      marginBottom: 16
-    },
-    className: "grid2"
-  }, /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      fontWeight: 500,
-      letterSpacing: "0.09em",
-      textTransform: "uppercase",
-      color: "#A8A09A",
-      marginBottom: 14
-    }
-  }, "Impressions by Post"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 170
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: POSTS,
-    barSize: 38,
-    margin: {
-      top: 4,
-      right: 4,
-      left: -18,
-      bottom: 0
-    }
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    stroke: "#F0EDE8",
-    vertical: false
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "date",
-    tick: {
-      fontSize: 10,
-      fill: "#A8A09A"
-    },
-    axisLine: false,
-    tickLine: false
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fontSize: 10,
-      fill: "#A8A09A"
-    },
-    axisLine: false,
-    tickLine: false,
-    tickFormatter: fmt
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    content: /*#__PURE__*/React.createElement(Tip, null),
-    cursor: {
-      fill: "#F5F4F0"
-    }
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "impressions",
-    name: "Impressions",
-    radius: [4, 4, 0, 0]
-  }, POSTS.map(function (p) {
-    return /*#__PURE__*/React.createElement(Cell, {
-      key: p.id,
-      fill: p.impressions === maxImp ? "#C8401A" : "#E8E3DB"
-    });
-  }))))), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      fontWeight: 500,
-      letterSpacing: "0.09em",
-      textTransform: "uppercase",
-      color: "#A8A09A",
-      marginBottom: 14
-    }
-  }, "Followers Gained"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 170
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: POSTS,
-    barSize: 38,
-    margin: {
-      top: 4,
-      right: 4,
-      left: -18,
-      bottom: 0
-    }
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    stroke: "#F0EDE8",
-    vertical: false
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "date",
-    tick: {
-      fontSize: 10,
-      fill: "#A8A09A"
-    },
-    axisLine: false,
-    tickLine: false
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fontSize: 10,
-      fill: "#A8A09A"
-    },
-    axisLine: false,
-    tickLine: false
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    content: /*#__PURE__*/React.createElement(Tip, null),
-    cursor: {
-      fill: "#F5F4F0"
-    }
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "followersGained",
-    name: "Followers Gained",
-    radius: [4, 4, 0, 0]
-  }, POSTS.map(function (p) {
-    return /*#__PURE__*/React.createElement(Cell, {
-      key: p.id,
-      fill: p.followersGained === maxFol ? "#15803D" : "#D1FAE5"
-    });
-  }))))), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      fontWeight: 500,
-      letterSpacing: "0.09em",
-      textTransform: "uppercase",
-      color: "#A8A09A",
-      marginBottom: 14
-    }
-  }, "Reactions & Reposts"), /*#__PURE__*/React.createElement(ResponsiveContainer, {
-    width: "100%",
-    height: 170
-  }, /*#__PURE__*/React.createElement(BarChart, {
-    data: POSTS,
-    barSize: 14,
-    barCategoryGap: "35%",
-    margin: {
-      top: 4,
-      right: 4,
-      left: -18,
-      bottom: 0
-    }
-  }, /*#__PURE__*/React.createElement(CartesianGrid, {
-    stroke: "#F0EDE8",
-    vertical: false
-  }), /*#__PURE__*/React.createElement(XAxis, {
-    dataKey: "date",
-    tick: {
-      fontSize: 10,
-      fill: "#A8A09A"
-    },
-    axisLine: false,
-    tickLine: false
-  }), /*#__PURE__*/React.createElement(YAxis, {
-    tick: {
-      fontSize: 10,
-      fill: "#A8A09A"
-    },
-    axisLine: false,
-    tickLine: false
-  }), /*#__PURE__*/React.createElement(Tooltip, {
-    content: /*#__PURE__*/React.createElement(Tip, null),
-    cursor: {
-      fill: "#F5F4F0"
-    }
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "reactions",
-    name: "Reactions",
-    fill: "#C8401A",
-    radius: [3, 3, 0, 0]
-  }), /*#__PURE__*/React.createElement(Bar, {
-    dataKey: "reposts",
-    name: "Reposts",
-    fill: "#93C5FD",
-    radius: [3, 3, 0, 0]
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      display: "flex",
-      gap: 16,
-      marginTop: 10
-    }
-  }, [["Reactions", "#C8401A"], ["Reposts", "#93C5FD"]].map(function (arr) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: arr[0],
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 6,
-        fontSize: 11,
-        color: "#6B635A"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: 8,
-        height: 8,
-        borderRadius: 2,
-        background: arr[1]
-      }
-    }), arr[0]);
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: card
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      fontWeight: 500,
-      letterSpacing: "0.09em",
-      textTransform: "uppercase",
-      color: "#A8A09A",
-      marginBottom: 2
-    }
-  }, "Video Viewer Demographics"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 11,
-      color: "#A8A09A",
-      marginBottom: 16
-    }
-  }, "Apr 26 video \xB7 by job title"), DEMOGRAPHICS.map(function (d, i) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: i,
-      style: {
-        marginBottom: 13
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        justifyContent: "space-between",
-        marginBottom: 5
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 12,
-        color: "#6B635A"
-      }
-    }, d.role), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 12,
-        fontWeight: 600,
-        color: "#1A1714"
-      }
-    }, d.pct, "%")), /*#__PURE__*/React.createElement("div", {
-      style: {
-        height: 3,
-        background: "#F0EDE8",
-        borderRadius: 2
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        height: "100%",
-        width: d.pct / 9.5 * 100 + "%",
-        background: i === 0 ? "#C8401A" : "#D4CFC8",
-        borderRadius: 2
-      }
-    })));
-  }))), /*#__PURE__*/React.createElement("div", {
-    style: {
-      ...card,
-      display: "flex",
-      flexWrap: "wrap",
-      alignItems: "center",
-      gap: 16,
-      padding: "14px 20px"
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 10,
-      fontWeight: 500,
-      letterSpacing: "0.09em",
-      textTransform: "uppercase",
-      color: "#A8A09A"
-    }
-  }, "Posts"), POSTS.map(function (p) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: p.id,
-      style: {
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        flexWrap: "wrap"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: 6,
-        height: 6,
-        borderRadius: "50%",
-        background: TYPE_COLOR[p.type]
-      }
-    }), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 12,
-        color: "#6B635A",
-        fontWeight: 500
-      }
-    }, p.date), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 11,
-        color: "#A8A09A"
-      }
-    }, p.caption.length > 42 ? p.caption.slice(0, 42) + "…" : p.caption), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 10,
-        fontWeight: 600,
-        background: TYPE_COLOR[p.type] + "18",
-        color: TYPE_COLOR[p.type],
-        padding: "2px 8px",
-        borderRadius: 10
-      }
-    }, p.type));
-  }))), showI && /*#__PURE__*/React.createElement("section", null, printing && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Lora',serif",
-      fontSize: 14,
-      fontWeight: 700,
-      color: "#A8A09A",
-      marginBottom: 16,
-      textTransform: "uppercase",
-      letterSpacing: "0.1em",
-      marginTop: 32
-    }
-  }, "Insights & Recommendations"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      maxWidth: printing ? "100%" : 680
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 10,
-      fontWeight: 500,
-      letterSpacing: "0.09em",
-      textTransform: "uppercase",
-      color: "#A8A09A",
-      marginBottom: 16
-    }
-  }, "Analysis \xB7 Apr 30, 2026 \xB7 ", POSTS.length, " posts \xB7 Apr 26\u201329"), INSIGHTS.map(function (ins) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: ins.id,
-      style: {
-        ...card,
-        marginBottom: 12
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        display: "flex",
-        gap: 6,
-        marginBottom: 10,
-        flexWrap: "wrap"
-      }
-    }, ins.flags.map(function (f) {
-      return /*#__PURE__*/React.createElement("span", {
-        key: f,
-        style: {
-          fontSize: 9,
-          fontWeight: 700,
-          letterSpacing: "0.09em",
-          textTransform: "uppercase",
-          background: FLAG[f].bg,
-          color: FLAG[f].text,
-          padding: "3px 8px",
-          borderRadius: 10
-        }
-      }, f);
-    })), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontFamily: "'Lora',serif",
-        fontSize: 14,
-        fontWeight: 600,
-        color: "#1A1714",
-        marginBottom: 8,
-        lineHeight: 1.45
-      }
-    }, ins.title), /*#__PURE__*/React.createElement("div", {
-      style: {
-        fontSize: 12,
-        color: "#6B635A",
-        lineHeight: 1.75,
-        marginBottom: 12
-      }
-    }, ins.body), /*#__PURE__*/React.createElement("div", {
-      style: {
-        borderTop: "1px solid #E7E3DC",
-        paddingTop: 10,
-        display: "flex",
-        gap: 10,
-        alignItems: "flex-start"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 9,
-        fontWeight: 700,
-        letterSpacing: "0.1em",
-        textTransform: "uppercase",
-        color: "#C8401A",
-        flexShrink: 0,
-        paddingTop: 2
-      }
-    }, "Action"), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 12,
-        color: "#6B635A",
-        lineHeight: 1.65
-      }
-    }, ins.action)));
-  }))), showT && /*#__PURE__*/React.createElement("section", null, printing && /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontFamily: "'Lora',serif",
-      fontSize: 14,
-      fontWeight: 700,
-      color: "#A8A09A",
-      marginBottom: 16,
-      textTransform: "uppercase",
-      letterSpacing: "0.1em",
-      marginTop: 32
-    }
-  }, "Data Table"), /*#__PURE__*/React.createElement("div", {
-    style: {
-      ...card,
-      padding: 0,
-      overflow: "hidden"
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      overflowX: "auto"
-    }
-  }, /*#__PURE__*/React.createElement("table", {
-    style: {
-      width: "100%",
-      borderCollapse: "collapse",
-      fontSize: 12
-    }
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
-    style: {
-      borderBottom: "1px solid #E7E3DC",
-      background: "#FAFAF8"
-    }
-  }, ["Date", "Caption", "Type", "Impressions", "Reach", "Eng%", "Clicks", "CTR%", "React.", "Comm.", "Reposts", "+Followers", "Page Views"].map(function (h) {
-    return /*#__PURE__*/React.createElement("th", {
-      key: h,
-      style: {
-        textAlign: "left",
-        padding: "10px 14px",
-        fontSize: 9,
-        fontWeight: 600,
-        letterSpacing: "0.09em",
-        textTransform: "uppercase",
-        color: "#A8A09A",
-        whiteSpace: "nowrap"
-      }
-    }, h);
-  }))), /*#__PURE__*/React.createElement("tbody", null, POSTS.map(function (p, i) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: p.id,
-      style: {
-        borderBottom: i < POSTS.length - 1 ? "1px solid #F5F4F0" : "none"
-      }
-    }, /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#6B635A",
-        fontWeight: 500,
-        whiteSpace: "nowrap"
-      }
-    }, p.date), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#1A1714",
-        maxWidth: 180,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap"
-      }
-    }, p.caption), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px"
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontSize: 10,
-        fontWeight: 600,
-        background: TYPE_COLOR[p.type] + "18",
-        color: TYPE_COLOR[p.type],
-        padding: "2px 8px",
-        borderRadius: 10
-      }
-    }, p.type)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        fontWeight: 600,
-        color: "#1A1714"
-      }
-    }, fmtN(p.impressions)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#1A1714"
-      }
-    }, fmtN(p.reached)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#C8401A",
-        fontWeight: 600
-      }
-    }, p.engRate, "%"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#1A1714"
-      }
-    }, fmtN(p.clicks)), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#6B635A"
-      }
-    }, p.ctr, "%"), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#1A1714"
-      }
-    }, p.reactions), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#1A1714"
-      }
-    }, p.comments), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#1D4ED8",
-        fontWeight: 500
-      }
-    }, p.reposts), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#15803D",
-        fontWeight: 700
-      }
-    }, p.followersGained), /*#__PURE__*/React.createElement("td", {
-      style: {
-        padding: "13px 14px",
-        color: "#6B635A"
-      }
-    }, p.pageViewers));
-  }))))))), /*#__PURE__*/React.createElement("footer", {
-    style: {
-      borderTop: "1px solid #E7E3DC",
-      padding: "12px 24px",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      background: "#fff",
-      marginTop: 8
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 10,
-      color: "#A8A09A"
-    }
-  }, "Nawy \xB7 Primary Sales EB \xB7 LinkedIn Dashboard \xB7 Apr 26 \u2013 May 29, 2026"), /*#__PURE__*/React.createElement("span", {
-    style: {
-      fontSize: 10,
-      color: "#A8A09A"
-    }
-  }, "Updated Apr 30, 2026")));
-}
-ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(Dashboard, null));
+
+new Chart(document.getElementById('chartImpr').getContext('2d'),{
+  type:'bar',
+  data:{ labels:LABELS, datasets:[{ label:'Impressions', data:[15240,5880,2647], backgroundColor:['#C8401A','#E8E3DB','#E8E3DB'], borderRadius:4 }] },
+  options: JSON.parse(JSON.stringify(chartOpts))
+});
+
+new Chart(document.getElementById('chartFoll').getContext('2d'),{
+  type:'bar',
+  data:{ labels:LABELS, datasets:[{ label:'Followers Gained', data:[3,1,8], backgroundColor:['#D1FAE5','#D1FAE5','#15803D'], borderRadius:4 }] },
+  options: JSON.parse(JSON.stringify(chartOpts))
+});
+
+new Chart(document.getElementById('chartRR').getContext('2d'),{
+  type:'bar',
+  data:{ labels:LABELS, datasets:[
+    { label:'Reactions', data:[53,53,27], backgroundColor:'#C8401A', borderRadius:3 },
+    { label:'Reposts',   data:[10,21,8],  backgroundColor:'#93C5FD', borderRadius:3 }
+  ]},
+  options:(function(){
+    var o=JSON.parse(JSON.stringify(chartOpts));
+    o.plugins.tooltip.callbacks.label=function(c){ return ' '+c.dataset.label+': '+c.parsed.y; };
+    return o;
+  })()
+});
+
+// Demographics
+var demos=[{r:'Salesperson',p:9.5},{r:'Software Developer',p:6.3},{r:'HR Specialist',p:2.7},{r:'Accountant',p:2.5},{r:'Marketing Specialist',p:2.4}];
+var demoEl=document.getElementById('demo');
+demos.forEach(function(d,i){
+  var fill=i===0?'#C8401A':'#D4CFC8';
+  var w=((d.p/9.5)*100).toFixed(1)+'%';
+  demoEl.innerHTML+='<div class="demo-row"><div class="demo-header"><span class="demo-role">'+d.r+'</span><span class="demo-pct">'+d.p+'%</span></div><div class="demo-bar-bg"><div class="demo-bar-fill" style="width:'+w+';background:'+fill+'"></div></div></div>';
+});
 </script>
-</body></html>
+</body>
+</html>
