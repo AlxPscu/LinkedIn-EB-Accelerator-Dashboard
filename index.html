@@ -8,82 +8,117 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
+/* ── NAWY COLOR SYSTEM ───────────────────────────────────────────────────── */
+:root {
+  --orange:      #FF5E00;
+  --orange-soft: #FFF2EB;
+  --blue:        #015C9A;
+  --blue-dark:   #0C314E;
+  --blue-soft:   #E5F1F9;
+  --teal:        #5ECCC0;
+  --teal-soft:   #E8F9F8;
+  --green:       #44D580;
+  --green-soft:  #EAFAF2;
+  --bg:          #FAFAF7;
+  --surface:     #FDFDFC;
+  --border:      #EFE9E3;
+  --grid:        #EFE9E3;
+  --text1:       #0C314E;
+  --text2:       #4A4A4A;
+  --text3:       #8B8985;
+  --clay:        #D7CFC7;
+  --bone:        #F4F1EA;
+}
+
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#F5F4F0;font-family:'Work Sans',sans-serif;color:#1A1714;font-size:14px;}
+body{background:var(--bg);font-family:'Work Sans',sans-serif;color:var(--text1);font-size:14px;}
 ::-webkit-scrollbar{width:3px;height:3px;}
-::-webkit-scrollbar-thumb{background:#D4CFC8;border-radius:2px;}
-.header{background:#fff;border-bottom:1px solid #E7E3DC;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12;}
-.header-title{font-family:'Lora',serif;font-weight:700;font-size:20px;color:#C8401A;letter-spacing:-0.02em;}
-.header-sub{font-weight:500;font-size:13px;color:#6B635A;}
-.header-meta{font-size:11px;color:#A8A09A;letter-spacing:0.03em;margin-top:4px;}
-.header-divider{color:#E7E3DC;margin:0 8px;}
-.btn-pdf{background:none;color:#C8401A;border:1.5px solid #C8401A;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Work Sans',sans-serif;flex-shrink:0;transition:background .15s;}
-.btn-pdf:hover{background:#FEF0EB;}
+::-webkit-scrollbar-thumb{background:var(--clay);border-radius:2px;}
+
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:12;}
+.header-title{font-family:'Lora',serif;font-weight:700;font-size:20px;color:var(--blue-dark);letter-spacing:-0.02em;}
+.header-sub{font-weight:500;font-size:13px;color:var(--text2);}
+.header-meta{font-size:11px;color:var(--text3);letter-spacing:0.03em;margin-top:4px;}
+.header-divider{color:var(--border);margin:0 8px;}
+
+.btn-pdf{background:none;color:var(--orange);border:1.5px solid var(--orange);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Work Sans',sans-serif;flex-shrink:0;transition:background .15s;}
+.btn-pdf:hover{background:var(--orange-soft);}
 .btn-pdf:disabled{opacity:.5;cursor:not-allowed;}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-bottom:1px solid #E7E3DC;}
-.kpi{padding:18px 22px;border-right:1px solid #E7E3DC;}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-bottom:1px solid var(--border);}
+.kpi{padding:18px 22px;border-right:1px solid var(--border);}
 .kpi:last-child{border-right:none;}
-.kpi-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:6px;}
-.kpi-value{font-family:'Lora',serif;font-size:28px;font-weight:700;color:#1A1714;line-height:1;}
-.kpi-sub{font-size:11px;color:#A8A09A;margin-top:5px;}
-.tabs{background:#fff;border-bottom:1px solid #E7E3DC;display:flex;padding-left:20px;}
-.tab{background:none;border:none;cursor:pointer;padding:11px 18px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;font-family:'Work Sans',sans-serif;color:#A8A09A;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
-.tab.active{color:#C8401A;border-bottom-color:#C8401A;}
+.kpi-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.kpi-value{font-family:'Lora',serif;font-size:28px;font-weight:700;color:var(--blue-dark);line-height:1;}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:5px;}
+
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding-left:20px;}
+.tab{background:none;border:none;cursor:pointer;padding:11px 18px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;font-family:'Work Sans',sans-serif;color:var(--text3);border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange);}
+
 main{padding:24px;}
 .section{display:none;}
 .section.active{display:block;}
+
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
-.card{background:#fff;border-radius:12px;border:1px solid #E7E3DC;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
-.card-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:14px;}
-.card-sublabel{font-size:11px;color:#A8A09A;margin-top:-10px;margin-bottom:14px;}
+.card{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:20px;box-shadow:0 1px 4px rgba(12,49,78,.06);}
+.card-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;}
+.card-sublabel{font-size:11px;color:var(--text3);margin-top:-10px;margin-bottom:14px;}
 .chart-wrap{position:relative;height:170px;}
+
 .legend{display:flex;gap:16px;margin-top:10px;}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#6B635A;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);}
 .legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+
 .post-legend{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:14px 20px;}
-.post-legend-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;}
+.post-legend-label{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);}
 .post-item{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .post-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.post-date{font-size:12px;color:#6B635A;font-weight:500;}
-.post-cap{font-size:11px;color:#A8A09A;}
+.post-date{font-size:12px;color:var(--text2);font-weight:500;}
+.post-cap{font-size:11px;color:var(--text3);}
 .post-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;}
+
 .demo-row{margin-bottom:13px;}
 .demo-header{display:flex;justify-content:space-between;margin-bottom:5px;}
-.demo-role{font-size:12px;color:#6B635A;}
-.demo-pct{font-size:12px;font-weight:600;color:#1A1714;}
-.demo-bar-bg{height:3px;background:#F0EDE8;border-radius:2px;}
+.demo-role{font-size:12px;color:var(--text2);}
+.demo-pct{font-size:12px;font-weight:600;color:var(--text1);}
+.demo-bar-bg{height:3px;background:var(--bone);border-radius:2px;}
 .demo-bar-fill{height:100%;border-radius:2px;}
-.insights-meta{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;margin-bottom:16px;}
-.insight-card{background:#fff;border-radius:12px;border:1px solid #E7E3DC;padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+
+.insights-meta{font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;}
+.insight-card{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:20px;margin-bottom:12px;box-shadow:0 1px 4px rgba(12,49,78,.06);}
 .flags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
 .flag{font-size:9px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;padding:3px 8px;border-radius:10px;}
-.flag-eb{background:#DBEAFE;color:#1E40AF;}
-.flag-content{background:#FEF3C7;color:#92400E;}
-.flag-marketing{background:#D1FAE5;color:#065F46;}
-.insight-title{font-family:'Lora',serif;font-size:14px;font-weight:600;color:#1A1714;margin-bottom:8px;line-height:1.45;}
-.insight-body{font-size:12px;color:#6B635A;line-height:1.75;margin-bottom:12px;}
-.insight-action{border-top:1px solid #E7E3DC;padding-top:10px;display:flex;gap:10px;align-items:flex-start;}
-.action-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#C8401A;flex-shrink:0;padding-top:2px;}
-.action-text{font-size:12px;color:#6B635A;line-height:1.65;}
-.table-wrap{background:#fff;border-radius:12px;border:1px solid #E7E3DC;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+.flag-eb{background:var(--blue-soft);color:var(--blue);}
+.flag-content{background:var(--orange-soft);color:#CC4800;}
+.flag-marketing{background:var(--teal-soft);color:#2E9D94;}
+.insight-title{font-family:'Lora',serif;font-size:14px;font-weight:600;color:var(--text1);margin-bottom:8px;line-height:1.45;}
+.insight-body{font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:12px;}
+.insight-action{border-top:1px solid var(--border);padding-top:10px;display:flex;gap:10px;align-items:flex-start;}
+.action-label{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);flex-shrink:0;padding-top:2px;}
+.action-text{font-size:12px;color:var(--text2);line-height:1.65;}
+
+.table-wrap{background:var(--surface);border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 4px rgba(12,49,78,.06);}
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
-thead tr{border-bottom:1px solid #E7E3DC;background:#FAFAF8;}
-th{text-align:left;padding:10px 14px;font-size:9px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:#A8A09A;white-space:nowrap;}
-tbody tr{border-bottom:1px solid #F5F4F0;}
+thead tr{border-bottom:1px solid var(--border);background:var(--bg);}
+th{text-align:left;padding:10px 14px;font-size:9px;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--text3);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--bone);}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover td{background:#FAFAF8;}
-td{padding:13px 14px;color:#1A1714;}
-.td-date{color:#6B635A;font-weight:500;white-space:nowrap;}
+tbody tr:hover td{background:var(--bone);}
+td{padding:13px 14px;color:var(--text1);}
+.td-date{color:var(--text2);font-weight:500;white-space:nowrap;}
 .td-caption{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.td-type{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap;}
-.td-eng{color:#C8401A;font-weight:600;}
-.td-reposts{color:#1D4ED8;font-weight:500;}
-.td-followers{color:#15803D;font-weight:700;}
-.td-muted{color:#6B635A;}
+.td-type{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;}
+.td-eng{color:var(--orange);font-weight:600;}
+.td-reposts{color:var(--blue);font-weight:500;}
+.td-followers{color:#1A9E55;font-weight:700;}
+.td-muted{color:var(--text2);}
 .td-bold{font-weight:600;}
-footer{border-top:1px solid #E7E3DC;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;background:#fff;margin-top:8px;}
-footer span{font-size:10px;color:#A8A09A;}
+
+footer{border-top:1px solid var(--border);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;background:var(--surface);margin-top:8px;}
+footer span{font-size:10px;color:var(--text3);}
+
 @media(max-width:640px){
   .grid2{grid-template-columns:1fr!important;}
   .kpis{grid-template-columns:repeat(2,1fr)!important;}
@@ -128,8 +163,8 @@ footer span{font-size:10px;color:#A8A09A;}
         <div class="card-label">Reactions &amp; Reposts</div>
         <div class="chart-wrap"><canvas id="chartRR"></canvas></div>
         <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#C8401A"></div>Reactions</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#93C5FD"></div>Reposts</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#FF5E00"></div>Reactions</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#015C9A"></div>Reposts</div>
         </div>
       </div>
       <div class="card">
@@ -140,9 +175,9 @@ footer span{font-size:10px;color:#A8A09A;}
     </div>
     <div class="card post-legend">
       <span class="post-legend-label">Posts</span>
-      <div class="post-item"><div class="post-dot" style="background:#C8401A"></div><span class="post-date">Apr 26</span><span class="post-cap">For real estate sales professionals ready for more</span><span class="post-tag" style="background:#C8401A18;color:#C8401A">Video</span></div>
-      <div class="post-item"><div class="post-dot" style="background:#1D4ED8"></div><span class="post-date">Apr 28</span><span class="post-cap">Q1 target. Hit.</span><span class="post-tag" style="background:#1D4ED818;color:#1D4ED8">Carousel</span></div>
-      <div class="post-item"><div class="post-dot" style="background:#15803D"></div><span class="post-date">Apr 29</span><span class="post-cap">Nawy Voices — The bar set by someone who engages with talent daily</span><span class="post-tag" style="background:#15803D18;color:#15803D">Ambassador</span></div>
+      <div class="post-item"><div class="post-dot" style="background:#FF5E00"></div><span class="post-date">Apr 26</span><span class="post-cap">For real estate sales professionals ready for more</span><span class="post-tag" style="background:#FFF2EB;color:#FF5E00">Video</span></div>
+      <div class="post-item"><div class="post-dot" style="background:#015C9A"></div><span class="post-date">Apr 28</span><span class="post-cap">Q1 target. Hit.</span><span class="post-tag" style="background:#E5F1F9;color:#015C9A">Carousel</span></div>
+      <div class="post-item"><div class="post-dot" style="background:#5ECCC0"></div><span class="post-date">Apr 29</span><span class="post-cap">Nawy Voices — The bar set by someone who engages with talent daily</span><span class="post-tag" style="background:#E8F9F8;color:#2E9D94">Ambassador</span></div>
     </div>
   </div>
 
@@ -188,9 +223,9 @@ footer span{font-size:10px;color:#A8A09A;}
         <table>
           <thead><tr><th>Date</th><th>Caption</th><th>Type</th><th>Impressions</th><th>Reach</th><th>Eng%</th><th>Clicks</th><th>CTR%</th><th>React.</th><th>Comm.</th><th>Reposts</th><th>+Followers</th><th>Page Views</th></tr></thead>
           <tbody>
-            <tr><td class="td-date">Apr 26</td><td class="td-caption">For real estate sales professionals ready for more</td><td><span class="td-type" style="background:#C8401A18;color:#C8401A">Video</span></td><td class="td-bold">15,240</td><td>10,963</td><td class="td-eng">6.7%</td><td>953</td><td class="td-muted">6.3%</td><td>53</td><td>0</td><td class="td-reposts">10</td><td class="td-followers">3</td><td class="td-muted">110</td></tr>
-            <tr><td class="td-date">Apr 28</td><td class="td-caption">Q1 target. Hit.</td><td><span class="td-type" style="background:#1D4ED818;color:#1D4ED8">Carousel</span></td><td class="td-bold">5,880</td><td>4,161</td><td class="td-eng">49.1%</td><td>2,808</td><td class="td-muted">47.8%</td><td>53</td><td>8</td><td class="td-reposts">21</td><td class="td-followers">1</td><td class="td-muted">53</td></tr>
-            <tr><td class="td-date">Apr 29</td><td class="td-caption">Nawy Voices — The bar set by someone who engages with talent daily</td><td><span class="td-type" style="background:#15803D18;color:#15803D">Ambassador</span></td><td class="td-bold">2,647</td><td>1,790</td><td class="td-eng">9.9%</td><td>223</td><td class="td-muted">8.4%</td><td>27</td><td>3</td><td class="td-reposts">8</td><td class="td-followers">8</td><td class="td-muted">16</td></tr>
+            <tr><td class="td-date">Apr 26</td><td class="td-caption">For real estate sales professionals ready for more</td><td><span class="td-type" style="background:#FFF2EB;color:#FF5E00">Video</span></td><td class="td-bold">15,240</td><td>10,963</td><td class="td-eng">6.7%</td><td>953</td><td class="td-muted">6.3%</td><td>53</td><td>0</td><td class="td-reposts">10</td><td class="td-followers">3</td><td class="td-muted">110</td></tr>
+            <tr><td class="td-date">Apr 28</td><td class="td-caption">Q1 target. Hit.</td><td><span class="td-type" style="background:#E5F1F9;color:#015C9A">Carousel</span></td><td class="td-bold">5,880</td><td>4,161</td><td class="td-eng">49.1%</td><td>2,808</td><td class="td-muted">47.8%</td><td>53</td><td>8</td><td class="td-reposts">21</td><td class="td-followers">1</td><td class="td-muted">53</td></tr>
+            <tr><td class="td-date">Apr 29</td><td class="td-caption">Nawy Voices — The bar set by someone who engages with talent daily</td><td><span class="td-type" style="background:#E8F9F8;color:#2E9D94">Ambassador</span></td><td class="td-bold">2,647</td><td>1,790</td><td class="td-eng">9.9%</td><td>223</td><td class="td-muted">8.4%</td><td>27</td><td>3</td><td class="td-reposts">8</td><td class="td-followers">8</td><td class="td-muted">16</td></tr>
           </tbody>
         </table>
       </div>
@@ -216,70 +251,58 @@ var LABELS = ['Apr 26','Apr 28','Apr 29'];
 var baseOpts = {
   responsive:true, maintainAspectRatio:false,
   plugins:{ legend:{display:false}, tooltip:{
-    backgroundColor:'#fff', titleColor:'#A8A09A', bodyColor:'#1A1714',
-    borderColor:'#E7E3DC', borderWidth:1, padding:10,
+    backgroundColor:'#FDFDFC', titleColor:'#8B8985', bodyColor:'#0C314E',
+    borderColor:'#EFE9E3', borderWidth:1, padding:10,
     callbacks:{ label:function(c){ return ' '+c.dataset.label+': '+c.parsed.y.toLocaleString(); }}
   }},
   scales:{
-    x:{ grid:{display:false}, ticks:{font:{size:10},color:'#A8A09A'}, border:{display:false} },
-    y:{ grid:{color:'#F0EDE8'}, ticks:{font:{size:10},color:'#A8A09A'}, border:{display:false} }
+    x:{ grid:{display:false}, ticks:{font:{size:10},color:'#8B8985'}, border:{display:false} },
+    y:{ grid:{color:'#EFE9E3'}, ticks:{font:{size:10},color:'#8B8985'}, border:{display:false} }
   }
 };
 
-var chartImpr = new Chart(document.getElementById('chartImpr').getContext('2d'),{
+new Chart(document.getElementById('chartImpr').getContext('2d'),{
   type:'bar',
-  data:{ labels:LABELS, datasets:[{ label:'Impressions', data:[15240,5880,2647], backgroundColor:['#C8401A','#E8E3DB','#E8E3DB'], borderRadius:4 }] },
+  data:{ labels:LABELS, datasets:[{ label:'Impressions', data:[15240,5880,2647], backgroundColor:['#FF5E00','#D7CFC7','#D7CFC7'], borderRadius:4 }] },
   options:JSON.parse(JSON.stringify(baseOpts))
 });
-var chartFoll = new Chart(document.getElementById('chartFoll').getContext('2d'),{
+new Chart(document.getElementById('chartFoll').getContext('2d'),{
   type:'bar',
-  data:{ labels:LABELS, datasets:[{ label:'Followers Gained', data:[3,1,8], backgroundColor:['#D1FAE5','#D1FAE5','#15803D'], borderRadius:4 }] },
+  data:{ labels:LABELS, datasets:[{ label:'Followers Gained', data:[3,1,8], backgroundColor:['#C8F5DC','#C8F5DC','#44D580'], borderRadius:4 }] },
   options:JSON.parse(JSON.stringify(baseOpts))
 });
-var chartRR = new Chart(document.getElementById('chartRR').getContext('2d'),{
+new Chart(document.getElementById('chartRR').getContext('2d'),{
   type:'bar',
   data:{ labels:LABELS, datasets:[
-    { label:'Reactions', data:[53,53,27], backgroundColor:'#C8401A', borderRadius:3 },
-    { label:'Reposts',   data:[10,21,8],  backgroundColor:'#93C5FD', borderRadius:3 }
+    { label:'Reactions', data:[53,53,27], backgroundColor:'#FF5E00', borderRadius:3 },
+    { label:'Reposts',   data:[10,21,8],  backgroundColor:'#015C9A', borderRadius:3 }
   ]},
-  options:(function(){ var o=JSON.parse(JSON.stringify(baseOpts)); return o; })()
+  options:JSON.parse(JSON.stringify(baseOpts))
 });
 
 var demos=[{r:'Salesperson',p:9.5},{r:'Software Developer',p:6.3},{r:'HR Specialist',p:2.7},{r:'Accountant',p:2.5},{r:'Marketing Specialist',p:2.4}];
 var demoEl=document.getElementById('demo');
 demos.forEach(function(d,i){
-  var fill=i===0?'#C8401A':'#D4CFC8';
+  var fill=i===0?'#FF5E00':'#D7CFC7';
   var w=((d.p/9.5)*100).toFixed(1)+'%';
   demoEl.innerHTML+='<div class="demo-row"><div class="demo-header"><span class="demo-role">'+d.r+'</span><span class="demo-pct">'+d.p+'%</span></div><div class="demo-bar-bg"><div class="demo-bar-fill" style="width:'+w+';background:'+fill+'"></div></div></div>';
 });
 
-// ── PDF EXPORT ────────────────────────────────────────────────────────────────
 function downloadPDF() {
   var btn = document.getElementById('pdf-btn');
   btn.textContent = 'Generating...';
   btn.disabled = true;
-
-  // Build a full-page wrapper with all sections visible
   var wrap = document.createElement('div');
-  wrap.style.cssText = 'width:900px;background:#F5F4F0;font-family:Work Sans,sans-serif;padding:0;';
-
-  // Header (hide button)
+  wrap.style.cssText = 'width:900px;background:#FAFAF7;font-family:Work Sans,sans-serif;padding:0;';
   var hdr = document.getElementById('main-header').cloneNode(true);
   hdr.querySelector('#pdf-btn').style.display = 'none';
   wrap.appendChild(hdr);
-
-  // KPIs
   wrap.appendChild(document.getElementById('main-kpis').cloneNode(true));
-
-  // Section title helper
   function sectionTitle(text) {
     var d = document.createElement('div');
-    d.style.cssText = 'font-family:Lora,serif;font-size:13px;font-weight:700;color:#A8A09A;text-transform:uppercase;letter-spacing:0.1em;padding:20px 24px 4px;';
-    d.textContent = text;
-    return d;
+    d.style.cssText = 'font-family:Lora,serif;font-size:13px;font-weight:700;color:#8B8985;text-transform:uppercase;letter-spacing:0.1em;padding:20px 24px 4px;';
+    d.textContent = text; return d;
   }
-
-  // Overview — replace canvases with images
   wrap.appendChild(sectionTitle('Overview'));
   var ovClone = document.getElementById('overview').cloneNode(true);
   ovClone.style.display = 'block';
@@ -292,36 +315,26 @@ function downloadPDF() {
     cloneCanvases[i].parentNode.replaceChild(img, cloneCanvases[i]);
   });
   wrap.appendChild(ovClone);
-
-  // Insights
   wrap.appendChild(sectionTitle('Insights & Recommendations'));
   var insClone = document.getElementById('insights').cloneNode(true);
   insClone.style.cssText = 'display:block;';
   insClone.querySelector('div').style.maxWidth = '100%';
   wrap.appendChild(insClone);
-
-  // Table
   wrap.appendChild(sectionTitle('Data Table'));
   var tblClone = document.getElementById('table').cloneNode(true);
   tblClone.style.display = 'block';
   wrap.appendChild(tblClone);
-
-  // Footer
   wrap.appendChild(document.querySelector('footer').cloneNode(true));
-
-  // Attach offscreen
   wrap.style.position = 'fixed';
   wrap.style.left = '-9999px';
   wrap.style.top = '0';
   document.body.appendChild(wrap);
-
   html2pdf().set({
-    margin: [8,8,8,8],
-    filename: 'Nawy-Primary-Accelerator-Tracker.pdf',
-    image: { type:'jpeg', quality:0.95 },
-    html2canvas: { scale:1.5, useCORS:true, logging:false },
-    jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
-    pagebreak: { mode:['avoid-all'] }
+    margin:[8,8,8,8], filename:'Nawy-Primary-Accelerator-Tracker.pdf',
+    image:{type:'jpeg',quality:0.95},
+    html2canvas:{scale:1.5,useCORS:true,logging:false},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+    pagebreak:{mode:['avoid-all']}
   }).from(wrap).save().then(function(){
     document.body.removeChild(wrap);
     btn.textContent = '↓ Download PDF';
