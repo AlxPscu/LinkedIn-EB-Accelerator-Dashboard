@@ -1,0 +1,86 @@
+{
+  "_comment": "Post registry for Nawy LinkedIn EB Accelerator Dashboard. Add new posts here \u2014 the automation picks them up automatically on the next daily run.",
+  "_setup": {
+    "LINKEDIN_ORG_ID": "Set this as a GitHub Secret. Numeric only, e.g. 12345678. Find it at: linkedin.com/company/nawy \u2192 Admin View \u2192 Super Admin \u2192 URL contains the ID.",
+    "LINKEDIN_ACCESS_TOKEN": "Set this as a GitHub Secret. Must have r_organization_social scope. Expires every 60 days \u2014 see README_AUTOMATION.md for renewal steps.",
+    "how_to_find_post_urn": "Open the LinkedIn post \u2192 click the three-dot menu \u2192 Copy link. The URN is the last segment, e.g. urn:li:ugcPost:7123456789012345678. Paste the full URN below."
+  },
+  "campaign": {
+    "name": "LinkedIn EB Accelerator \u2014 Primary Sales",
+    "start_date": "2026-04-26",
+    "end_date": "2026-05-29",
+    "total_days": 34
+  },
+  "posts": [
+    {
+      "urn": "FILL_IN_URN_FOR_APR26",
+      "date": "Apr 26",
+      "date_iso": "2026-04-26",
+      "caption": "For real estate sales professionals ready for more",
+      "type": "Video",
+      "color": "#FF5E00",
+      "tag_bg": "#FFF2EB",
+      "tag_color": "#FF5E00",
+      "metrics": {
+        "impressions": 16568,
+        "reach": 11767,
+        "clicks": 1019,
+        "reactions": 56,
+        "comments": 0,
+        "reposts": 11,
+        "eng_rate": 6.6,
+        "ctr": 6.2,
+        "followers_gained": 3,
+        "page_views": 118,
+        "_note": "followers_gained and page_views are not available via API \u2014 update manually from screenshots"
+      }
+    },
+    {
+      "urn": "FILL_IN_URN_FOR_APR28",
+      "date": "Apr 28",
+      "date_iso": "2026-04-28",
+      "caption": "Q1 target. Hit.",
+      "type": "Carousel",
+      "color": "#015C9A",
+      "tag_bg": "#E5F1F9",
+      "tag_color": "#015C9A",
+      "metrics": {
+        "impressions": 8136,
+        "reach": 5561,
+        "clicks": 3544,
+        "reactions": 58,
+        "comments": 8,
+        "reposts": 21,
+        "eng_rate": 44.6,
+        "ctr": 43.6,
+        "followers_gained": 1,
+        "page_views": 70,
+        "carousel_inflated": true,
+        "_note": "eng_rate marked carousel_inflated \u2014 swipe-clicks inflate this metric. Use reposts as true virality signal."
+      }
+    },
+    {
+      "urn": "FILL_IN_URN_FOR_APR29",
+      "date": "Apr 29",
+      "date_iso": "2026-04-29",
+      "caption": "Nawy Voices \u2014 The bar set by someone who engages with talent daily",
+      "type": "Ambassador",
+      "color": "#5ECCC0",
+      "tag_bg": "#E8F9F8",
+      "tag_color": "#2E9D94",
+      "metrics": {
+        "impressions": 4319,
+        "reach": 2769,
+        "clicks": 380,
+        "reactions": 31,
+        "comments": 3,
+        "reposts": 8,
+        "eng_rate": 9.8,
+        "ctr": 8.8,
+        "followers_gained": 15,
+        "page_views": 24,
+        "_note": "followers_gained and page_views are not available via API \u2014 update manually from screenshots"
+      }
+    }
+  ]
+}
